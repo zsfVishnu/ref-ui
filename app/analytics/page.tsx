@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { toast } from 'sonner';
 import { 
   Search, 
   Download, 
@@ -34,7 +35,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 
 // Enhanced mock data with more detailed applicant information
-const mockApplicants = [
+const initialMockApplicants = [
   {
     id: 1,
     name: 'Alex Johnson',
@@ -162,6 +163,7 @@ const educationLevels = ['All Education', 'BS', 'MS', 'MBA', 'PhD'];
 
 export default function AnalyticsPage() {
   const { user } = useAuth();
+  const [mockApplicants, setMockApplicants] = useState(initialMockApplicants);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEvent, setSelectedEvent] = useState('All Events');
   const [selectedCompany, setSelectedCompany] = useState('All Companies');
@@ -174,6 +176,44 @@ export default function AnalyticsPage() {
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false);
   const [selectedApplicant, setSelectedApplicant] = useState<typeof mockApplicants[0] | null>(null);
   const [applicantNotes, setApplicantNotes] = useState('');
+
+  // Update applicant status with visual feedback
+  const updateApplicantStatus = useCallback((applicantId: number, newStatus: string) => {
+    setMockApplicants(prev => 
+      prev.map(applicant => 
+        applicant.id === applicantId 
+          ? { ...applicant, status: newStatus }
+          : applicant
+      )
+    );
+    
+    const applicant = mockApplicants.find(a => a.id === applicantId);
+    const statusText = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+    
+    toast.success(`${applicant?.name} has been ${statusText.toLowerCase()}`, {
+      description: `Status updated successfully`,
+    });
+  }, [mockApplicants]);
+
+  // Save applicant notes with feedback
+  const saveApplicantNotes = useCallback(() => {
+    if (selectedApplicant) {
+      setMockApplicants(prev => 
+        prev.map(applicant => 
+          applicant.id === selectedApplicant.id 
+            ? { ...applicant, notes: applicantNotes }
+            : applicant
+        )
+      );
+      
+      toast.success('Notes saved successfully', {
+        description: `Notes updated for ${selectedApplicant.name}`,
+      });
+      
+      setSelectedApplicant(null);
+      setApplicantNotes('');
+    }
+  }, [selectedApplicant, applicantNotes]);
 
   // Get all unique skills for filter
   const allSkills = useMemo(() => {
@@ -289,20 +329,11 @@ export default function AnalyticsPage() {
     }
   };
 
-  const updateApplicantStatus = (applicantId: number, newStatus: string) => {
-    console.log(`Updating applicant ${applicantId} status to ${newStatus}`);
-  };
-
-  const saveApplicantNotes = () => {
-    if (selectedApplicant) {
-      console.log(`Saving notes for applicant ${selectedApplicant.id}: ${applicantNotes}`);
-      setSelectedApplicant(null);
-      setApplicantNotes('');
-    }
-  };
-
   const exportData = () => {
     console.log('Exporting applicant data...');
+    toast.success('Export started', {
+      description: 'Your data export will be ready shortly',
+    });
   };
 
   const toggleSkillFilter = (skill: string) => {

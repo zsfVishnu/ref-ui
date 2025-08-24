@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Edit, Save, X, Plus, MapPin, Briefcase, GraduationCap, User } from 'lucide-react';
+import { Edit, Save, X, Plus, MapPin, Briefcase, GraduationCap, User, ArrowLeft } from 'lucide-react';
 
 export default function AccountPage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -66,6 +67,17 @@ export default function AccountPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Breadcrumb Navigation */}
+        <div className="mb-6">
+          <Link 
+            href="/" 
+            className="inline-flex items-center text-gray-600 hover:text-black transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Dashboard
+          </Link>
+        </div>
+
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-black">My Account</h1>
           <p className="text-gray-600 mt-2">Manage your profile and account settings</p>

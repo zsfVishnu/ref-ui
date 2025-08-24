@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { Toaster } from 'sonner';
 import { AuthProvider } from '@/contexts/AuthContext';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -20,6 +21,18 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           {children}
+          <Toaster 
+            position="top-right" 
+            richColors 
+            closeButton
+            toastOptions={{
+              style: {
+                background: 'white',
+                border: '1px solid #e5e7eb',
+                color: '#374151',
+              },
+            }}
+          />
         </AuthProvider>
       </body>
     </html>

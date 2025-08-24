@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu, X, User, Check, ChevronDown } from 'lucide-react';
+import { Menu, X, User, Check, ChevronDown, Home } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePathname } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,13 +17,14 @@ import {
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
+  const pathname = usePathname();
 
   return (
     <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
             <div className="bg-black text-white p-1 rounded">
               <Check className="h-4 w-4" />
             </div>
@@ -30,22 +32,30 @@ export default function Header() {
               <div className="font-bold text-lg text-black">Get Referral</div>
               <div className="text-xs text-gray-600">Your Gateway to Job Referrals</div>
             </div>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           {user && (
             <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/" className="text-gray-700 hover:text-black font-medium transition-colors">
-                Dashboard
+              <Link 
+                href="/" 
+                className={`flex items-center space-x-1 font-medium transition-colors ${
+                  pathname === '/' ? 'text-black' : 'text-gray-700 hover:text-black'
+                }`}
+              >
+                <Home className="h-4 w-4" />
+                <span>Home</span>
               </Link>
               {user.role === 'referrer' && (
-                <Link href="/analytics" className="text-gray-700 hover:text-black font-medium transition-colors">
+                <Link 
+                  href="/analytics" 
+                  className={`font-medium transition-colors ${
+                    pathname === '/analytics' ? 'text-black' : 'text-gray-700 hover:text-black'
+                  }`}
+                >
                   Analytics
                 </Link>
               )}
-              <Link href="#" className="text-gray-700 hover:text-black font-medium transition-colors">
-                Contact
-              </Link>
             </nav>
           )}
 
@@ -98,26 +108,44 @@ export default function Header() {
             <nav className="flex flex-col space-y-4">
               {user ? (
                 <>
-                  <Link href="/" className="text-gray-700 hover:text-black font-medium">
-                    Dashboard
+                  <Link 
+                    href="/" 
+                    className={`flex items-center space-x-2 font-medium transition-colors ${
+                      pathname === '/' ? 'text-black' : 'text-gray-700 hover:text-black'
+                    }`}
+                  >
+                    <Home className="h-4 w-4" />
+                    <span>Home</span>
                   </Link>
                   {user.role === 'referrer' && (
-                    <Link href="/analytics" className="text-gray-700 hover:text-black font-medium">
+                    <Link 
+                      href="/analytics" 
+                      className={`font-medium transition-colors ${
+                        pathname === '/analytics' ? 'text-black' : 'text-gray-700 hover:text-black'
+                      }`}
+                    >
                       Analytics
                     </Link>
                   )}
-                  <Link href="#" className="text-gray-700 hover:text-black font-medium">
-                    Contact
-                  </Link>
                 </>
               ) : null}
               {user ? (
                 <div className="flex flex-col space-y-4 pt-4">
-                  <Link href="/account" className="text-gray-700 hover:text-black font-medium">
+                  <Link 
+                    href="/account" 
+                    className={`font-medium transition-colors ${
+                      pathname === '/account' ? 'text-black' : 'text-gray-700 hover:text-black'
+                    }`}
+                  >
                     My Account
                   </Link>
                   {user.role === 'referrer' && (
-                    <Link href="/analytics" className="text-gray-700 hover:text-black font-medium">
+                    <Link 
+                      href="/analytics" 
+                      className={`font-medium transition-colors ${
+                        pathname === '/analytics' ? 'text-black' : 'text-gray-700 hover:text-black'
+                      }`}
+                    >
                       Analytics
                     </Link>
                   )}
