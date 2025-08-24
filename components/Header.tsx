@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, X, User, Check, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +15,7 @@ import {
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // This would come from auth context in real app
+  const { user, signOut } = useAuth();
 
   return (
     <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
@@ -32,24 +33,25 @@ export default function Header() {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-gray-700 hover:text-black font-medium transition-colors">
-              Home
-            </Link>
-            <Link href="/companies" className="text-gray-700 hover:text-black font-medium transition-colors">
-              Companies
-            </Link>
-            <Link href="/referral-events" className="text-gray-700 hover:text-black font-medium transition-colors">
-              Referral Events
-            </Link>
-            <Link href="#" className="text-gray-700 hover:text-black font-medium transition-colors">
-              Contact
-            </Link>
-          </nav>
+          {user && (
+            <nav className="hidden md:flex items-center space-x-8">
+              <Link href="/" className="text-gray-700 hover:text-black font-medium transition-colors">
+                Dashboard
+              </Link>
+              {user.role === 'referrer' && (
+                <Link href="/analytics" className="text-gray-700 hover:text-black font-medium transition-colors">
+                  Analytics
+                </Link>
+              )}
+              <Link href="#" className="text-gray-700 hover:text-black font-medium transition-colors">
+                Contact
+              </Link>
+            </nav>
+          )}
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
-            {isLoggedIn ? (
+            {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center space-x-2">
@@ -63,28 +65,21 @@ export default function Header() {
                   <DropdownMenuItem asChild>
                     <Link href="/account">My Account</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/manage-applicants">Manage Applicants</Link>
-                  </DropdownMenuItem>
+                  {user.role === 'referrer' && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/analytics">Analytics</Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => setIsLoggedIn(false)}>
+                  <DropdownMenuItem onClick={signOut}>
                     Sign Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <>
-                <Link href="/signin">
-                  <Button variant="ghost" className="font-medium">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link href="/signup">
-                  <Button className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-6">
-                    Get Started
-                  </Button>
-                </Link>
-              </>
+              <div className="text-sm text-gray-600">
+                Sign in to access your dashboard
+              </div>
             )}
           </div>
 
@@ -101,42 +96,40 @@ export default function Header() {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-100">
             <nav className="flex flex-col space-y-4">
-              <Link href="/" className="text-gray-700 hover:text-black font-medium">
-                Home
-              </Link>
-              <Link href="/companies" className="text-gray-700 hover:text-black font-medium">
-                Companies
-              </Link>
-              <Link href="/referral-events" className="text-gray-700 hover:text-black font-medium">
-                Referral Events
-              </Link>
-              <Link href="#" className="text-gray-700 hover:text-black font-medium">
-                Contact
-              </Link>
-              {isLoggedIn ? (
+              {user ? (
+                <>
+                  <Link href="/" className="text-gray-700 hover:text-black font-medium">
+                    Dashboard
+                  </Link>
+                  {user.role === 'referrer' && (
+                    <Link href="/analytics" className="text-gray-700 hover:text-black font-medium">
+                      Analytics
+                    </Link>
+                  )}
+                  <Link href="#" className="text-gray-700 hover:text-black font-medium">
+                    Contact
+                  </Link>
+                </>
+              ) : null}
+              {user ? (
                 <div className="flex flex-col space-y-4 pt-4">
                   <Link href="/account" className="text-gray-700 hover:text-black font-medium">
                     My Account
                   </Link>
-                  <Link href="/manage-applicants" className="text-gray-700 hover:text-black font-medium">
-                    Manage Applicants
-                  </Link>
-                  <Button variant="ghost" onClick={() => setIsLoggedIn(false)} className="justify-start p-0 h-auto font-medium text-gray-700 hover:text-black">
+                  {user.role === 'referrer' && (
+                    <Link href="/analytics" className="text-gray-700 hover:text-black font-medium">
+                      Analytics
+                    </Link>
+                  )}
+                  <Button variant="ghost" onClick={signOut} className="justify-start p-0 h-auto font-medium text-gray-700 hover:text-black">
                     Sign Out
                   </Button>
                 </div>
               ) : (
-                <div className="flex items-center space-x-4 pt-4">
-                  <Link href="/signin">
-                    <Button variant="ghost" className="font-medium">
-                      Sign In
-                    </Button>
-                  </Link>
-                  <Link href="/signup">
-                    <Button className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold">
-                      Get Started
-                    </Button>
-                  </Link>
+                <div className="pt-4">
+                  <p className="text-sm text-gray-600">
+                    Sign in to access your dashboard
+                  </p>
                 </div>
               )}
             </nav>

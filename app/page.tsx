@@ -1,25 +1,22 @@
+'use client';
+
+import { useAuth } from '@/contexts/AuthContext';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import Header from '@/components/Header';
-import HeroSection from '@/components/HeroSection';
-import ConnectingSection from '@/components/ConnectingSection';
-import HowItWorksSection from '@/components/HowItWorksSection';
-import TailoredSection from '@/components/TailoredSection';
-import SuccessStoriesSection from '@/components/SuccessStoriesSection';
-import FinalCTASection from '@/components/FinalCTASection';
-import Footer from '@/components/Footer';
+import DashboardPage from '@/app/dashboard/page';
+import LandingPage from '@/components/LandingPage';
+import FeedbackWidget from '@/components/FeedbackWidget';
 
 export default function Home() {
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen">
       <Header />
-      <main>
-        <HeroSection />
-        <ConnectingSection />
-        <HowItWorksSection />
-        <TailoredSection />
-        <SuccessStoriesSection />
-        <FinalCTASection />
-      </main>
-      <Footer />
+      <ProtectedRoute fallback={<LandingPage />}>
+        <DashboardPage />
+      </ProtectedRoute>
+      {!user && <FeedbackWidget />}
     </div>
   );
 }
