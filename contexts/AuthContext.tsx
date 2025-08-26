@@ -5,9 +5,8 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 interface User {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
-  role: 'candidate' | 'referrer';
+  name: string;
+  role?: 'candidate' | 'referrer';
 }
 
 interface AuthContextType {
@@ -26,89 +25,83 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Dummy users for development
-const dummyUsers: User[] = [
-  {
-    id: '1',
-    email: 'john@example.com',
-    firstName: 'John',
-    lastName: 'Doe',
-    role: 'candidate'
-  },
-  {
-    id: '2',
-    email: 'sarah@example.com',
-    firstName: 'Sarah',
-    lastName: 'Chen',
-    role: 'referrer'
-  },
-  {
-    id: '3',
-    email: 'mike@example.com',
-    firstName: 'Mike',
-    lastName: 'Johnson',
-    role: 'referrer'
-  }
-];
+const API_URL = "http://localhost:4000/api/auth"; // Update with your backend address
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // On mount: check for JWT, fetch user if present
   useEffect(() => {
-    // Check for stored user session
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetch(`${API_URL}/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.email) setUser(data);
+          setIsLoading(false);
+        })
+        .catch(() => setIsLoading(false));
+    } else {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
-  const signIn = async (email: string, password: string): Promise<boolean> => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const foundUser = dummyUsers.find(u => u.email === email);
-    if (foundUser && password === 'password') {
-      setUser(foundUser);
-      localStorage.setItem('user', JSON.stringify(foundUser));
-      return true;
-    }
-    return false;
-  };
-
+  // Sign Up (Register)
   const signUp = async (userData: {
     firstName: string;
     lastName: string;
     email: string;
     password: string;
     role: 'candidate' | 'referrer';
-  }): Promise<boolean> => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Check if user already exists
-    if (dummyUsers.find(u => u.email === userData.email)) {
+  }) => {
+    try {
+      const res = await fetch(`${API_URL}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: userData.email,
+          password: userData.password,
+          name: `${userData.firstName} ${userData.lastName}`,
+          role: userData.role,
+        }),
+      });
+      if (!res.ok) return false;
+
+      // Auto-login after signup
+      return await signIn(userData.email, userData.password);
+    } catch {
       return false;
     }
-
-    const newUser: User = {
-      id: Date.now().toString(),
-      email: userData.email,
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      role: userData.role
-    };
-
-    dummyUsers.push(newUser);
-    setUser(newUser);
-    localStorage.setItem('user', JSON.stringify(newUser));
-    return true;
   };
 
+  // Sign In (Login)
+  const signIn = async (email: string, password: string) => {
+    try {
+      const res = await fetch(`${API_URL}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.token) return false;
+
+      localStorage.setItem('token', data.token);
+
+      // Fetch and set user
+      setUser({ id: data.user.id, email: data.user.email, name: data.user.name, role: data.user.role });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  // Sign Out (Logout)
   const signOut = () => {
+    localStorage.removeItem('token');
     setUser(null);
-    localStorage.removeItem('user');
   };
 
   return (

@@ -1,131 +1,154 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Plus, ExternalLink, Calendar, MapPin, Users, Filter, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Search, Plus, ExternalLink, Calendar, MapPin, Users, Filter, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import ReferralRequestForm from '@/components/ReferralRequestForm';
 import CreateReferralEventForm from '@/components/CreateReferralEventForm';
 import { useAuth } from '@/contexts/AuthContext';
-
-const companies = [
-  {
-    id: 1,
-    name: 'Apple',
-    logo: '🍎',
-    tags: ['Finance', 'Gaming', 'Media', 'Tech'],
-    careersUrl: 'https://jobs.apple.com',
-  },
-  {
-    id: 2,
-    name: 'Amazon',
-    logo: '📦',
-    tags: ['Commerce', 'Gaming', 'Tech'],
-    careersUrl: 'https://amazon.jobs',
-  },
-  {
-    id: 3,
-    name: 'Microsoft',
-    logo: '🪟',
-    tags: ['Finance', 'Gaming', 'Tech'],
-    careersUrl: 'https://careers.microsoft.com',
-  },
-  {
-    id: 4,
-    name: 'Google',
-    logo: '🔍',
-    tags: ['Tech'],
-    careersUrl: 'https://careers.google.com',
-  },
-];
-
-const referralEvents = [
-  {
-    id: 1,
-    company: 'Google',
-    logo: '🔍',
-    jobTitle: 'Senior Software Engineer',
-    location: 'Mountain View, CA',
-    applicants: 12,
-    maxApplicants: 20,
-    expiryDate: '2024-02-15',
-    postedBy: 'Sarah Chen',
-    requirements: 'Looking for experienced React/Node.js developers with 5+ years experience',
-    jobUrl: 'https://careers.google.com/jobs/results/123456789',
-    tags: ['React', 'Node.js', 'TypeScript'],
-  },
-  {
-    id: 2,
-    company: 'Microsoft',
-    logo: '🪟',
-    jobTitle: 'Product Manager',
-    location: 'Seattle, WA',
-    applicants: 8,
-    maxApplicants: 15,
-    expiryDate: '2024-02-20',
-    postedBy: 'Michael Rodriguez',
-    requirements: 'Seeking PM with B2B SaaS experience and strong analytical skills',
-    jobUrl: 'https://careers.microsoft.com/us/en/job/1234567',
-    tags: ['Product Management', 'Analytics', 'B2B'],
-  },
-];
-
-// Mock applied referrals data
-const appliedReferrals = [
-  {
-    id: 1,
-    company: 'Google',
-    logo: '🔍',
-    jobTitle: 'Senior Software Engineer',
-    location: 'Mountain View, CA',
-    appliedDate: '2024-01-15',
-    status: 'pending',
-    referrerName: 'Sarah Chen',
-    notes: 'Application under review by hiring team',
-  },
-  {
-    id: 2,
-    company: 'Microsoft',
-    logo: '🪟',
-    jobTitle: 'Product Manager',
-    location: 'Seattle, WA',
-    appliedDate: '2024-01-18',
-    status: 'shortlisted',
-    referrerName: 'Michael Rodriguez',
-    notes: 'Moved to next round - technical interview scheduled',
-  },
-  {
-    id: 3,
-    company: 'Amazon',
-    logo: '📦',
-    jobTitle: 'Data Scientist',
-    location: 'Austin, TX',
-    appliedDate: '2024-01-10',
-    status: 'rejected',
-    referrerName: 'Emily Wang',
-    notes: 'Position filled with internal candidate',
-  },
-];
-
-const categories = ['All', 'Tech', 'Finance', 'Commerce', 'Entertainment', 'Social Media', 'Gaming', 'Media'];
+import { useCompanies } from '@/hooks/useCompanies';
+import { useReferralEvents } from '@/hooks/useReferralEvents';
+import { useAppliedReferrals } from '@/hooks/useAppliedReferrals';
 
 export default function DashboardPage() {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedCompany, setSelectedCompany] = useState<typeof companies[0] | null>(null);
+  const [selectedCompany, setSelectedCompany] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('companies');
 
-  const filteredCompanies = companies.filter(company => {
-    const matchesSearch = company.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || company.tags.includes(selectedCategory);
-    return matchesSearch && matchesCategory;
-  });
+  // Use the hooks to fetch data from API
+  const { companies, isLoading: companiesLoading, error: companiesError, refetch: refetchCompanies } = useCompanies();
+  const { referralEvents, isLoading: referralEventsLoading, error: referralEventsError, refetch: refetchReferralEvents } = useReferralEvents();
+  const { appliedReferrals, isLoading: appliedReferralsLoading, error: appliedReferralsError, refetch: refetchAppliedReferrals } = useAppliedReferrals();
+
+  // Fallback data when API is not available
+  const fallbackCompanies = [
+    {
+      id: 1,
+      name: 'Apple',
+      logo: 'https://logo.clearbit.com/apple.com',
+      tags: ['Tech', 'Hardware', 'Software'],
+      careersUrl: 'https://jobs.apple.com',
+    },
+    {
+      id: 2,
+      name: 'Google',
+      logo: 'https://logo.clearbit.com/google.com',
+      tags: ['Tech', 'AI', 'Search'],
+      careersUrl: 'https://careers.google.com',
+    },
+    {
+      id: 3,
+      name: 'Microsoft',
+      logo: 'https://logo.clearbit.com/microsoft.com',
+      tags: ['Tech', 'Software', 'Cloud'],
+      careersUrl: 'https://careers.microsoft.com',
+    },
+    {
+      id: 4,
+      name: 'Amazon',
+      logo: 'https://logo.clearbit.com/amazon.com',
+      tags: ['Tech', 'E-commerce', 'Cloud'],
+      careersUrl: 'https://amazon.jobs',
+    },
+  ];
+
+  const fallbackReferralEvents = [
+    {
+      id: 1,
+      company: 'Google',
+      logo: 'https://logo.clearbit.com/google.com',
+      jobTitle: 'Senior Software Engineer',
+      location: 'Mountain View, CA',
+      applicants: 12,
+      maxApplicants: 20,
+      expiryDate: '2024-02-15',
+      postedBy: 'Sarah Chen',
+      requirements: 'Looking for experienced React/Node.js developers with 5+ years experience',
+      jobUrl: 'https://careers.google.com/jobs/results/123456789',
+      tags: ['React', 'Node.js', 'TypeScript'],
+    },
+    {
+      id: 2,
+      company: 'Microsoft',
+      logo: 'https://logo.clearbit.com/microsoft.com',
+      jobTitle: 'Product Manager',
+      location: 'Seattle, WA',
+      applicants: 8,
+      maxApplicants: 15,
+      expiryDate: '2024-02-20',
+      postedBy: 'Michael Rodriguez',
+      requirements: 'Seeking PM with B2B SaaS experience and strong analytical skills',
+      jobUrl: 'https://careers.microsoft.com/us/en/job/1234567',
+      tags: ['Product Management', 'Analytics', 'B2B'],
+    },
+  ];
+
+  const fallbackAppliedReferrals = [
+    {
+      id: 1,
+      company: 'Google',
+      logo: 'https://logo.clearbit.com/google.com',
+      jobTitle: 'Senior Software Engineer',
+      location: 'Mountain View, CA',
+      appliedDate: '2024-01-15',
+      status: 'pending' as const,
+      referrerName: 'Sarah Chen',
+      notes: 'Application under review by hiring team',
+    },
+    {
+      id: 2,
+      company: 'Microsoft',
+      logo: 'https://logo.clearbit.com/microsoft.com',
+      jobTitle: 'Product Manager',
+      location: 'Seattle, WA',
+      appliedDate: '2024-01-18',
+      status: 'shortlisted' as const,
+      referrerName: 'Michael Rodriguez',
+      notes: 'Moved to next round - technical interview scheduled',
+    },
+  ];
+
+  // Use fallback data when API fails
+  const displayCompanies = companiesError ? fallbackCompanies : (companies || []);
+  const displayReferralEvents = referralEventsError ? fallbackReferralEvents : (referralEvents || []);
+  const displayAppliedReferrals = appliedReferralsError ? fallbackAppliedReferrals : (appliedReferrals || []);
+
+  // Debug logging to help identify issues
+  useEffect(() => {
+    console.log('Dashboard state:', {
+      companies: displayCompanies?.length || 0,
+      referralEvents: displayReferralEvents?.length || 0,
+      appliedReferrals: displayAppliedReferrals?.length || 0,
+      companiesLoading,
+      referralEventsLoading,
+      appliedReferralsLoading,
+      companiesError,
+      referralEventsError,
+      appliedReferralsError
+    });
+  }, [displayCompanies, displayReferralEvents, displayAppliedReferrals, companiesLoading, referralEventsLoading, appliedReferralsLoading, companiesError, referralEventsError, appliedReferralsError]);
+
+  // Generate categories dynamically from API data - only when companies data is available
+  const categories = displayCompanies && displayCompanies.length > 0 
+    ? ['All', ...Array.from(new Set(displayCompanies.flatMap((company: any) => company.tags || []))).sort()]
+    : ['All'];
+
+  // Filter companies based on search and category - only when companies data is available
+  const filteredCompanies = displayCompanies && displayCompanies.length > 0 
+    ? displayCompanies.filter((company: any) => {
+        const matchesSearch = company.name?.toLowerCase().includes(searchTerm.toLowerCase()) || false;
+        const matchesCategory = selectedCategory === 'All' || (company.tags && company.tags.includes(selectedCategory));
+        return matchesSearch && matchesCategory;
+      })
+    : [];
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -210,7 +233,54 @@ export default function DashboardPage() {
             </div>
 
             <div className="grid gap-6">
-              {referralEvents.map((event) => {
+              {/* Loading State */}
+              {referralEventsLoading && (
+                <div className="space-y-4">
+                  {[...Array(3)].map((_, index) => (
+                    <Card key={index} className="animate-pulse">
+                      <CardHeader>
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-10 h-10 bg-gray-200 rounded-lg"></div>
+                            <div className="space-y-2">
+                              <div className="h-4 bg-gray-200 rounded w-32"></div>
+                              <div className="h-3 bg-gray-200 rounded w-24"></div>
+                            </div>
+                          </div>
+                          <div className="h-6 bg-gray-200 rounded w-20"></div>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          <div className="h-3 bg-gray-200 rounded w-full"></div>
+                          <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+
+              {/* Error State */}
+              {referralEventsError && !referralEventsLoading && (
+                <div className="text-center py-8">
+                  <div className="text-red-500 mb-4">
+                    <XCircle className="h-12 w-12 mx-auto" />
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Error loading referral events</h3>
+                  <p className="text-gray-600 mb-4">{referralEventsError}</p>
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 text-sm text-blue-800">
+                    <p className="font-medium mb-2">💡 API Server Not Available</p>
+                    <p>Showing fallback data. To see real-time data, start your API server at <code className="bg-blue-100 px-2 py-1 rounded">localhost:4000</code></p>
+                  </div>
+                  <Button onClick={refetchReferralEvents} variant="outline">
+                    Try Again
+                  </Button>
+                </div>
+              )}
+
+              {/* Referral Events */}
+              {!referralEventsLoading && !referralEventsError && displayReferralEvents.map((event) => {
                 const daysLeft = getDaysUntilExpiry(event.expiryDate);
                 const isExpiringSoon = daysLeft <= 3;
                 const isExpired = daysLeft < 0;
@@ -220,7 +290,22 @@ export default function DashboardPage() {
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <div className="flex items-center space-x-4">
-                          <div className="text-3xl">{event.logo}</div>
+                          <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                            <img 
+                              src={event.logo} 
+                              alt={`${event.company} logo`}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                // Fallback to company initial if image fails to load
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                target.nextElementSibling?.classList.remove('hidden');
+                              }}
+                            />
+                            <div className="hidden w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                              {event.company.charAt(0).toUpperCase()}
+                            </div>
+                          </div>
                           <div>
                             <CardTitle className="text-xl">{event.jobTitle}</CardTitle>
                             <CardDescription className="text-lg font-medium">
@@ -288,6 +373,17 @@ export default function DashboardPage() {
                   </Card>
                 );
               })}
+
+              {/* Empty State */}
+              {!referralEventsLoading && !referralEventsError && displayReferralEvents.length === 0 && (
+                <div className="text-center py-8">
+                  <div className="text-gray-400 mb-4">
+                    <Filter className="h-12 w-12 mx-auto" />
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No referral events yet</h3>
+                  <p className="text-gray-600">Create your first referral event to start helping candidates.</p>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -312,17 +408,79 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-black">Your Applied Referrals</h2>
                 <Badge variant="secondary" className="text-sm">
-                  {appliedReferrals.length} Applications
+                  {displayAppliedReferrals.length} Applications
                 </Badge>
               </div>
 
               <div className="grid gap-6">
-                {appliedReferrals.map((referral) => (
+                {/* Loading State */}
+                {appliedReferralsLoading && (
+                  <div className="space-y-4">
+                    {[...Array(3)].map((_, index) => (
+                      <Card key={index} className="animate-pulse">
+                        <CardHeader>
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-center space-x-4">
+                              <div className="w-10 h-10 bg-gray-200 rounded-lg"></div>
+                              <div className="space-y-2">
+                                <div className="h-4 bg-gray-200 rounded w-32"></div>
+                                <div className="h-3 bg-gray-200 rounded w-24"></div>
+                              </div>
+                            </div>
+                            <div className="h-6 bg-gray-200 rounded w-20"></div>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-3">
+                            <div className="h-3 bg-gray-200 rounded w-full"></div>
+                            <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+
+                {/* Error State */}
+                {appliedReferralsError && !appliedReferralsLoading && (
+                  <div className="text-center py-8">
+                    <div className="text-red-500 mb-4">
+                      <XCircle className="h-12 w-12 mx-auto" />
+                    </div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Error loading applied referrals</h3>
+                    <p className="text-gray-600 mb-4">{appliedReferralsError}</p>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 text-sm text-blue-800">
+                      <p className="font-medium mb-2">💡 API Server Not Available</p>
+                      <p>Showing fallback data. To see real-time data, start your API server at <code className="bg-blue-100 px-2 py-1 rounded">localhost:4000</code></p>
+                    </div>
+                    <Button onClick={refetchAppliedReferrals} variant="outline">
+                      Try Again
+                    </Button>
+                  </div>
+                )}
+
+                {/* Applied Referrals */}
+                {!appliedReferralsLoading && !appliedReferralsError && displayAppliedReferrals.map((referral) => (
                   <Card key={referral.id} className="hover:shadow-lg transition-shadow duration-200">
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <div className="flex items-center space-x-4">
-                          <div className="text-3xl">{referral.logo}</div>
+                          <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                            <img 
+                              src={referral.logo} 
+                              alt={`${referral.company} logo`}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                // Fallback to company initial if image fails to load
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                target.nextElementSibling?.classList.remove('hidden');
+                              }}
+                            />
+                            <div className="hidden w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                              {referral.company.charAt(0).toUpperCase()}
+                            </div>
+                          </div>
                           <div>
                             <CardTitle className="text-xl">{referral.jobTitle}</CardTitle>
                             <CardDescription className="text-lg font-medium">
@@ -363,7 +521,8 @@ export default function DashboardPage() {
                   </Card>
                 ))}
 
-                {appliedReferrals.length === 0 && (
+                {/* Empty State */}
+                {!appliedReferralsLoading && !appliedReferralsError && displayAppliedReferrals.length === 0 && (
                   <div className="text-center py-12">
                     <div className="text-gray-400 mb-4">
                       <Filter className="h-12 w-12 mx-auto" />
@@ -410,7 +569,22 @@ export default function DashboardPage() {
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center space-x-3">
-                          <div className="text-2xl">{company.logo}</div>
+                          <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                            <img 
+                              src={company.logo} 
+                              alt={`${company.name} logo`}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                // Fallback to company initial if image fails to load
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                target.nextElementSibling?.classList.remove('hidden');
+                              }}
+                            />
+                            <div className="hidden w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                              {company.name.charAt(0).toUpperCase()}
+                            </div>
+                          </div>
                           <div>
                             <h3 className="font-semibold text-lg text-black">{company.name}</h3>
                           </div>
@@ -464,12 +638,55 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-black">Active Referral Events</h2>
                 <Badge variant="secondary" className="text-sm">
-                  {referralEvents.length} Events Available
+                  {displayReferralEvents.length} Events Available
                 </Badge>
               </div>
 
               <div className="grid gap-6">
-                {referralEvents.map((event) => {
+                {/* Loading State */}
+                {referralEventsLoading && (
+                  <div className="space-y-4">
+                    {[...Array(3)].map((_, index) => (
+                      <Card key={index} className="animate-pulse">
+                        <CardHeader>
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-center space-x-4">
+                              <div className="w-10 h-10 bg-gray-200 rounded-lg"></div>
+                              <div className="space-y-2">
+                                <div className="h-4 bg-gray-200 rounded w-32"></div>
+                                <div className="h-3 bg-gray-200 rounded w-24"></div>
+                              </div>
+                            </div>
+                            <div className="h-6 bg-gray-200 rounded w-20"></div>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-3">
+                            <div className="h-3 bg-gray-200 rounded w-full"></div>
+                            <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+
+                {/* Error State */}
+                {referralEventsError && !referralEventsLoading && (
+                  <div className="text-center py-8">
+                    <div className="text-red-500 mb-4">
+                      <XCircle className="h-12 w-12 mx-auto" />
+                    </div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Error loading referral events</h3>
+                    <p className="text-gray-600 mb-4">{referralEventsError}</p>
+                    <Button onClick={refetchReferralEvents} variant="outline">
+                      Try Again
+                    </Button>
+                  </div>
+                )}
+
+                {/* Referral Events */}
+                {!referralEventsLoading && !referralEventsError && displayReferralEvents.map((event) => {
                   const daysLeft = getDaysUntilExpiry(event.expiryDate);
                   const isExpiringSoon = daysLeft <= 3;
                   const isExpired = daysLeft < 0;
@@ -479,7 +696,22 @@ export default function DashboardPage() {
                       <CardHeader>
                         <div className="flex items-start justify-between">
                           <div className="flex items-center space-x-4">
-                            <div className="text-3xl">{event.logo}</div>
+                            <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                              <img 
+                                src={event.logo} 
+                                alt={`${event.company} logo`}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  // Fallback to company initial if image fails to load
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                  target.nextElementSibling?.classList.remove('hidden');
+                                }}
+                              />
+                              <div className="hidden w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                                {event.company.charAt(0).toUpperCase()}
+                              </div>
+                            </div>
                             <div>
                               <CardTitle className="text-xl">{event.jobTitle}</CardTitle>
                               <CardDescription className="text-lg font-medium">
@@ -556,7 +788,8 @@ export default function DashboardPage() {
                   );
                 })}
 
-                {referralEvents.length === 0 && (
+                {/* Empty State */}
+                {!referralEventsLoading && !referralEventsError && displayReferralEvents.length === 0 && (
                   <div className="text-center py-12">
                     <div className="text-gray-400 mb-4">
                       <Filter className="h-12 w-12 mx-auto" />
