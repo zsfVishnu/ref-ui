@@ -2,6 +2,7 @@ import { Check, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
+import Link from "next/link";
 
 export default function Footer() {
   return (

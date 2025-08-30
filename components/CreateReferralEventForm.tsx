@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,13 +10,17 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
+import {useAuth} from "@/contexts/AuthContext";
+import { useToast } from '@/hooks/use-toast';
 
 const companies = [
   'Google', 'Microsoft', 'Amazon', 'Apple', 'Meta', 'Netflix', 'Tesla', 'Uber',
   'Airbnb', 'Spotify', 'Adobe', 'Salesforce', 'Oracle', 'IBM', 'Intel'
 ];
 
-export default function CreateReferralEventForm() {
+export default function CreateReferralEventForm({ onClose }: { onClose?: () => void }) {
+    const { user } = useAuth();
+    const { toast } = useToast();
   const [formData, setFormData] = useState({
     company: '',
     jobTitle: '',
@@ -29,8 +33,9 @@ export default function CreateReferralEventForm() {
   const [expiryDate, setExpiryDate] = useState<Date>();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("starting submit");
     const newErrors: Record<string, string> = {};
 
     if (!formData.company) newErrors.company = 'Company is required';
@@ -44,8 +49,48 @@ export default function CreateReferralEventForm() {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      // Handle form submission
-      console.log('Referral event created:', { ...formData, expiryDate });
+      // Prepare the full event data
+      const referralEvent = {
+        id: undefined, // Let backend assign
+        company: formData.company,
+        logo: '', // blank
+        job_title: formData.jobTitle,
+        location: formData.location,
+        applicants: 0,
+        max_applicants: Number(formData.maxApplicants),
+        expiry_date: expiryDate ? expiryDate.toISOString() : '',
+        posted_by: user?.id || '',
+        requirements: formData.requirements,
+        job_url: formData.jobUrl,
+        tags: formData.tags,
+      };
+      await fetch('http://localhost:4000/referral-events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(referralEvent),
+      })
+        .then(res => {
+            console.log(res);
+          if (!res.ok) throw new Error('Failed to create referral event');
+          return res.json();
+        })
+        .then(data => {
+            console.log("data", data);
+          toast({
+            title: 'Success',
+            description: 'Referral event created successfully!',
+            variant: 'default',
+          });
+          if (onClose) onClose();
+        })
+        .catch(err => {
+            console.error(err);
+          toast({
+            title: 'Error',
+            description: err.message || 'Failed to create referral event.',
+            variant: 'destructive',
+          });
+        });
       // Reset form or show success message
     }
   };
@@ -94,8 +139,8 @@ export default function CreateReferralEventForm() {
           id="jobUrl"
           value={formData.jobUrl}
           onChange={(e) => handleChange('jobUrl', e.target.value)}
-          className={`mt-1 ${errors.jobUrl ? 'border-red-500' : ''}`}
-          placeholder="https://careers.company.com/jobs/123456"
+            className={`mt-1 ${errors.jobUrl ? 'border-red-500' : ''}`}
+            placeholder="https://careers.company.com/jobs/123456"
         />
         {errors.jobUrl && <p className="mt-1 text-sm text-red-600">{errors.jobUrl}</p>}
       </div>

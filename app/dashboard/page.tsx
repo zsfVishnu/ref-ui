@@ -143,6 +143,10 @@ export default function DashboardPage() {
     });
   };
 
+    const addReferralEvent = () => {
+
+    };
+
   const getDaysUntilExpiry = (dateString: string) => {
     const today = new Date();
     const expiry = new Date(dateString);
