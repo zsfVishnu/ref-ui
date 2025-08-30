@@ -166,6 +166,16 @@ export default function LandingPage() {
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Demo Account Info */}
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm">
+                      <p className="font-medium text-blue-800 mb-2">🎯 Demo Accounts Available</p>
+                      <div className="space-y-1 text-blue-700">
+                        <p><strong>Candidate:</strong> candidate@test.com</p>
+                        <p><strong>Referrer:</strong> referrer@test.com</p>
+                        <p><strong>Password:</strong> password123</p>
+                      </div>
+                    </div>
+
                     {isSignUp && (
                       <>
                         <div className="grid grid-cols-2 gap-4">
