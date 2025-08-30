@@ -376,8 +376,8 @@ export default function DashboardPage() {
 
         {/* Job Seeker Tabbed Dashboard */}
         {user?.role === 'candidate' && (
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full smooth-tabs">
+            <TabsList className="grid w-full grid-cols-3 mb-8 rounded-full p-1 bg-gray-100">
               <TabsTrigger value="applied" className="text-sm font-medium">
                 Applied Referrals
               </TabsTrigger>
