@@ -66,6 +66,7 @@ export default function LandingPage() {
       try {
         let success = false;
         if (isSignUp) {
+          console.log("formdata " , formData);
           success = await signUp({
             firstName: formData.firstName,
             lastName: formData.lastName,
