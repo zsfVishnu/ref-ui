@@ -78,8 +78,7 @@ export default function LandingPage() {
             setErrors({ email: 'User already exists with this email' });
           }
         } else {
-          success = true
-            // await signIn(formData.email, formData.password);
+          success = await signIn(formData.email, formData.password);
           if (!success) {
             setErrors({ password: 'Invalid email or password' });
           }
