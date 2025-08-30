@@ -43,7 +43,12 @@ export default function Footer() {
           <div>
             <h3 className="font-bold text-black text-lg mb-6">Terms & Conditions</h3>
             <div className="space-y-4 text-black">
-              <p>Privacy Policy</p>
+              <Link href="/privacy" className="block hover:text-black/70 transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="block hover:text-black/70 transition-colors">
+                Terms & Conditions
+              </Link>
               <div className="pt-4">
                 <h4 className="font-semibold mb-2">Follow</h4>
               </div>

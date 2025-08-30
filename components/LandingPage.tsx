@@ -9,6 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Eye, EyeOff, Check, Search, Unlock, Users } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import Link from 'next/link';
 import HowItWorksSection from '@/components/HowItWorksSection';
 import TailoredSection from '@/components/TailoredSection';
 import SuccessStoriesSection from '@/components/SuccessStoriesSection';
@@ -312,7 +313,14 @@ export default function LandingPage() {
                             }
                           />
                           <Label htmlFor="agreeToTerms" className="text-sm">
-                            I agree to the Terms of Service and Privacy Policy
+                            I agree to the{' '}
+                            <Link href="/terms" className="text-blue-600 hover:text-blue-500 underline">
+                              Terms of Service
+                            </Link>
+                            {' '}and{' '}
+                            <Link href="/privacy" className="text-blue-600 hover:text-blue-500 underline">
+                              Privacy Policy
+                            </Link>
                           </Label>
                         </div>
                         {errors.agreeToTerms && (
