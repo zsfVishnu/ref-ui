@@ -64,7 +64,7 @@ export default function LandingPage() {
     if (Object.keys(newErrors).length === 0) {
       setIsLoading(true);
       try {
-        let success = false;
+        let success = true;
         if (isSignUp) {
           console.log("formdata " , formData);
           success = await signUp({
