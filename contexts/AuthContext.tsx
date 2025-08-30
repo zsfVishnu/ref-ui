@@ -6,7 +6,7 @@ interface User {
   id: string;
   email: string;
   name: string;
-  role?: 'candidate' | 'referrer';
+  role: 'candidate' | 'referrer';
 }
 
 interface AuthContextType {
@@ -91,6 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('token', data.token);
 
       // Fetch and set user
+        console.log('user is ', data.user)
       setUser({ id: data.user.id, email: data.user.email, name: data.user.name, role: data.user.role });
       return true;
     } catch {

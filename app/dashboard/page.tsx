@@ -199,7 +199,7 @@ export default function DashboardPage() {
         {/* Welcome Header */}
         <div className="mb-8">
           <h1 className="text-3xl lg:text-4xl font-bold text-black mb-4">
-            Welcome back, {user?.name}! 👋
+            Welcome back, {user?.name}! with the role {user?.role}👋
           </h1>
           <p className="text-lg text-gray-600">
             {user?.role === 'referrer' 
@@ -614,13 +614,13 @@ export default function DashboardPage() {
                         </Dialog>
                       </div>
 
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {company.tags.map((tag, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
+                      {/*<div className="flex flex-wrap gap-2 mb-4">*/}
+                      {/*  {company.tags.map((tag, index) => (*/}
+                      {/*    <Badge key={index} variant="secondary" className="text-xs">*/}
+                      {/*      {tag}*/}
+                      {/*    </Badge>*/}
+                      {/*  ))}*/}
+                      {/*</div>*/}
 
                       <Button
                         variant="outline"

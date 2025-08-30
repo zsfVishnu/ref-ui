@@ -304,23 +304,25 @@ export default function AnalyticsPage() {
   }, []);
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending':
+      console.log("status", status);
+      switch (status) {
+      case 'Review pending':
         return 'bg-yellow-100 text-yellow-800';
       case 'shortlisted':
         return 'bg-green-100 text-green-800';
       case 'rejected':
         return 'bg-red-100 text-red-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-yellow-800';
     }
   };
 
   const getStatusIcon = (status: string) => {
+      console.log("status", status);
     switch (status) {
-      case 'pending':
+      case 'review pending':
         return <Clock className="h-4 w-4" />;
-      case 'shortlisted':
+      case 'resume shortlisted':
         return <CheckCircle className="h-4 w-4" />;
       case 'rejected':
         return <XCircle className="h-4 w-4" />;

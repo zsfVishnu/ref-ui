@@ -349,9 +349,6 @@ export default function LandingPage() {
 
                   {!isSignUp && (
                     <div className="mt-4 text-center">
-                      <p className="text-sm text-gray-500">
-                        Demo credentials: any email with password "password"
-                      </p>
                     </div>
                   )}
                 </CardContent>
