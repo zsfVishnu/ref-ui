@@ -17,6 +17,7 @@ import { useReferralEvents } from '@/hooks/useReferralEvents';
 import { useAppliedReferrals } from '@/hooks/useAppliedReferrals';
 
 export default function DashboardPage() {
+  console.log("dashboard page called")
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -198,7 +199,7 @@ export default function DashboardPage() {
         {/* Welcome Header */}
         <div className="mb-8">
           <h1 className="text-3xl lg:text-4xl font-bold text-black mb-4">
-            Welcome back, {user?.firstName}! 👋
+            Welcome back, {user?.name}! 👋
           </h1>
           <p className="text-lg text-gray-600">
             {user?.role === 'referrer' 
@@ -280,7 +281,9 @@ export default function DashboardPage() {
               )}
 
               {/* Referral Events */}
+              {console.log("loading",referralEventsLoading)}
               {!referralEventsLoading && !referralEventsError && displayReferralEvents.map((event) => {
+                console.log("display events")
                 const daysLeft = getDaysUntilExpiry(event.expiryDate);
                 const isExpiringSoon = daysLeft <= 3;
                 const isExpired = daysLeft < 0;
