@@ -17,7 +17,6 @@ import { useReferralEvents } from '@/hooks/useReferralEvents';
 import { useAppliedReferrals } from '@/hooks/useAppliedReferrals';
 
 export default function DashboardPage() {
-  console.log("dashboard page called")
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -122,21 +121,6 @@ export default function DashboardPage() {
   const displayReferralEvents = referralEventsError ? fallbackReferralEvents : (referralEvents || []);
   const displayAppliedReferrals = appliedReferralsError ? fallbackAppliedReferrals : (appliedReferrals || []);
 
-  // Debug logging to help identify issues
-  useEffect(() => {
-    console.log('Dashboard state:', {
-      companies: displayCompanies?.length || 0,
-      referralEvents: displayReferralEvents?.length || 0,
-      appliedReferrals: displayAppliedReferrals?.length || 0,
-      companiesLoading,
-      referralEventsLoading,
-      appliedReferralsLoading,
-      companiesError,
-      referralEventsError,
-      appliedReferralsError
-    });
-  }, [displayCompanies, displayReferralEvents, displayAppliedReferrals, companiesLoading, referralEventsLoading, appliedReferralsLoading, companiesError, referralEventsError, appliedReferralsError]);
-
   // Generate categories dynamically from API data - only when companies data is available
   const categories = displayCompanies && displayCompanies.length > 0 
     ? ['All', ...Array.from(new Set(displayCompanies.flatMap((company: any) => company.tags || []))).sort()]
@@ -193,7 +177,8 @@ export default function DashboardPage() {
     }
   };
 
-  return (
+  // @ts-ignore
+    return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Welcome Header */}
@@ -281,9 +266,7 @@ export default function DashboardPage() {
               )}
 
               {/* Referral Events */}
-              {console.log("loading",referralEventsLoading)}
               {!referralEventsLoading && !referralEventsError && displayReferralEvents.map((event) => {
-                console.log("display events")
                 const daysLeft = getDaysUntilExpiry(event.expiryDate);
                 const isExpiringSoon = daysLeft <= 3;
                 const isExpired = daysLeft < 0;
