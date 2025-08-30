@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { toast } from 'sonner';
 
 interface User {
   id: string;
@@ -25,29 +26,54 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_URL = "http://localhost:4000/api/auth"; // Update with your backend address
+// Dummy user credentials for testing
+const DUMMY_USERS = {
+  candidate: {
+    id: 'dummy-candidate-1',
+    email: 'candidate@test.com',
+    password: 'password123',
+    name: 'John Candidate',
+    role: 'candidate' as const,
+  },
+  referrer: {
+    id: 'dummy-referrer-1',
+    email: 'referrer@test.com',
+    password: 'password123',
+    name: 'Sarah Referrer',
+    role: 'referrer' as const,
+  }
+};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // On mount: check for JWT, fetch user if present
+  // On mount: check for stored user session
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetch(`${API_URL}/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.email) setUser(data);
-          setIsLoading(false);
-        })
-        .catch(() => setIsLoading(false));
-    } else {
-      setIsLoading(false);
+    const storedUser = localStorage.getItem('dummyUser');
+    if (storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
+      } catch (error) {
+        console.error('Error parsing stored user:', error);
+        localStorage.removeItem('dummyUser');
+      }
     }
+    setIsLoading(false);
   }, []);
+
+  // Check if email matches dummy user pattern
+  const isDummyUser = (email: string) => {
+    return email === DUMMY_USERS.candidate.email || email === DUMMY_USERS.referrer.email;
+  };
+
+  // Get dummy user by email
+  const getDummyUser = (email: string) => {
+    if (email === DUMMY_USERS.candidate.email) return DUMMY_USERS.candidate;
+    if (email === DUMMY_USERS.referrer.email) return DUMMY_USERS.referrer;
+    return null;
+  };
 
   // Sign Up (Register)
   const signUp = async (userData: {
@@ -57,7 +83,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string;
     role: 'candidate' | 'referrer';
   }) => {
+    // Check if it's a dummy user email
+    if (isDummyUser(userData.email)) {
+      const dummyUser = getDummyUser(userData.email);
+      if (dummyUser && userData.password === dummyUser.password) {
+        const userSession = {
+          id: dummyUser.id,
+          email: dummyUser.email,
+          name: `${userData.firstName} ${userData.lastName}`,
+          role: userData.role,
+        };
+        localStorage.setItem('dummyUser', JSON.stringify(userSession));
+        setUser(userSession);
+        toast.success('Welcome! You\'re using the demo account.', {
+          description: 'This is a test environment with dummy data.',
+        });
+        return true;
+      }
+    }
+
+    // For non-dummy users, try API
     try {
+      const API_URL = "http://localhost:4000/api/auth";
       const res = await fetch(`${API_URL}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -68,33 +115,72 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           role: userData.role,
         }),
       });
-      if (!res.ok) return false;
+      if (!res.ok) {
+        toast.error('Registration failed', {
+          description: 'Try using the demo accounts: candidate@test.com or referrer@test.com',
+        });
+        return false;
+      }
 
       // Auto-login after signup
       return await signIn(userData.email, userData.password);
-    } catch {
+    } catch (error) {
+      toast.error('API server not available', {
+        description: 'Use demo accounts: candidate@test.com or referrer@test.com (password: password123)',
+      });
       return false;
     }
   };
 
   // Sign In (Login)
   const signIn = async (email: string, password: string) => {
+    // Check if it's a dummy user
+    if (isDummyUser(email)) {
+      const dummyUser = getDummyUser(email);
+      if (dummyUser && password === dummyUser.password) {
+        const userSession = {
+          id: dummyUser.id,
+          email: dummyUser.email,
+          name: dummyUser.name,
+          role: dummyUser.role,
+        };
+        localStorage.setItem('dummyUser', JSON.stringify(userSession));
+        setUser(userSession);
+        toast.success(`Welcome back, ${dummyUser.name}!`, {
+          description: 'You\'re using the demo account.',
+        });
+        return true;
+      } else {
+        toast.error('Invalid credentials', {
+          description: 'Use password: password123 for demo accounts',
+        });
+        return false;
+      }
+    }
+
+    // For non-dummy users, try API
     try {
+      const API_URL = "http://localhost:4000/api/auth";
       const res = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-      if (!res.ok || !data.token) return false;
+      if (!res.ok || !data.token) {
+        toast.error('Login failed', {
+          description: 'Try using the demo accounts: candidate@test.com or referrer@test.com',
+        });
+        return false;
+      }
 
       localStorage.setItem('token', data.token);
-
-      // Fetch and set user
-        console.log('user is ', data.user)
       setUser({ id: data.user.id, email: data.user.email, name: data.user.name, role: data.user.role });
       return true;
-    } catch {
+    } catch (error) {
+      toast.error('API server not available', {
+        description: 'Use demo accounts: candidate@test.com or referrer@test.com (password: password123)',
+      });
       return false;
     }
   };
@@ -102,7 +188,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Sign Out (Logout)
   const signOut = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('dummyUser');
     setUser(null);
+    toast.success('Signed out successfully');
   };
 
   return (
