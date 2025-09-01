@@ -5,16 +5,42 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Plus, ExternalLink, Calendar, MapPin, Users, Filter, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Search,
+  Plus,
+  ExternalLink,
+  Calendar,
+  MapPin,
+  Users,
+  Filter,
+  Clock,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+} from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import ReferralRequestForm from '@/components/ReferralRequestForm';
 import CreateReferralEventForm from '@/components/CreateReferralEventForm';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCompanies } from '@/hooks/useCompanies';
 import { useReferralEvents } from '@/hooks/useReferralEvents';
 import { useAppliedReferrals } from '@/hooks/useAppliedReferrals';
+import Image from 'next/image';
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -22,130 +48,66 @@ export default function DashboardPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedCompany, setSelectedCompany] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('companies');
+  const [selectedReferralEvent, setSelectedReferralEvent] = useState<any>(null);
 
   // Use the hooks to fetch data from API
-  const { companies, isLoading: companiesLoading, error: companiesError, refetch: refetchCompanies } = useCompanies();
-  const { referralEvents, isLoading: referralEventsLoading, error: referralEventsError, refetch: refetchReferralEvents } = useReferralEvents();
-  const { appliedReferrals, isLoading: appliedReferralsLoading, error: appliedReferralsError, refetch: refetchAppliedReferrals } = useAppliedReferrals();
-
-  // Fallback data when API is not available
-  const fallbackCompanies = [
-    {
-      id: 1,
-      name: 'Apple',
-      logo: 'https://logo.clearbit.com/apple.com',
-      tags: ['Tech', 'Hardware', 'Software'],
-      careersUrl: 'https://jobs.apple.com',
-    },
-    {
-      id: 2,
-      name: 'Google',
-      logo: 'https://logo.clearbit.com/google.com',
-      tags: ['Tech', 'AI', 'Search'],
-      careersUrl: 'https://careers.google.com',
-    },
-    {
-      id: 3,
-      name: 'Microsoft',
-      logo: 'https://logo.clearbit.com/microsoft.com',
-      tags: ['Tech', 'Software', 'Cloud'],
-      careersUrl: 'https://careers.microsoft.com',
-    },
-    {
-      id: 4,
-      name: 'Amazon',
-      logo: 'https://logo.clearbit.com/amazon.com',
-      tags: ['Tech', 'E-commerce', 'Cloud'],
-      careersUrl: 'https://amazon.jobs',
-    },
-  ];
-
-  const fallbackReferralEvents = [
-    {
-      id: 1,
-      company: 'Google',
-      logo: 'https://logo.clearbit.com/google.com',
-      jobTitle: 'Senior Software Engineer',
-      location: 'Mountain View, CA',
-      applicants: 12,
-      maxApplicants: 20,
-      expiryDate: '2024-02-15',
-      postedBy: 'Sarah Chen',
-      requirements: 'Looking for experienced React/Node.js developers with 5+ years experience',
-      jobUrl: 'https://careers.google.com/jobs/results/123456789',
-      tags: ['React', 'Node.js', 'TypeScript'],
-    },
-    {
-      id: 2,
-      company: 'Microsoft',
-      logo: 'https://logo.clearbit.com/microsoft.com',
-      jobTitle: 'Product Manager',
-      location: 'Seattle, WA',
-      applicants: 8,
-      maxApplicants: 15,
-      expiryDate: '2024-02-20',
-      postedBy: 'Michael Rodriguez',
-      requirements: 'Seeking PM with B2B SaaS experience and strong analytical skills',
-      jobUrl: 'https://careers.microsoft.com/us/en/job/1234567',
-      tags: ['Product Management', 'Analytics', 'B2B'],
-    },
-  ];
-
-  const fallbackAppliedReferrals = [
-    {
-      id: 1,
-      company: 'Google',
-      logo: 'https://logo.clearbit.com/google.com',
-      jobTitle: 'Senior Software Engineer',
-      location: 'Mountain View, CA',
-      appliedDate: '2024-01-15',
-      status: 'pending' as const,
-      referrerName: 'Sarah Chen',
-      notes: 'Application under review by hiring team',
-    },
-    {
-      id: 2,
-      company: 'Microsoft',
-      logo: 'https://logo.clearbit.com/microsoft.com',
-      jobTitle: 'Product Manager',
-      location: 'Seattle, WA',
-      appliedDate: '2024-01-18',
-      status: 'shortlisted' as const,
-      referrerName: 'Michael Rodriguez',
-      notes: 'Moved to next round - technical interview scheduled',
-    },
-  ];
+  const {
+    companies,
+    isLoading: companiesLoading,
+    error: companiesError,
+    refetch: refetchCompanies,
+  } = useCompanies();
+  const {
+    referralEvents,
+    isLoading: referralEventsLoading,
+    error: referralEventsError,
+    refetch: refetchReferralEvents,
+  } = useReferralEvents();
+  const {
+    appliedReferrals,
+    isLoading: appliedReferralsLoading,
+    error: appliedReferralsError,
+    refetch: refetchAppliedReferrals,
+  } = useAppliedReferrals();
 
   // Use fallback data when API fails
-  const displayCompanies = companiesError ? fallbackCompanies : (companies || []);
-  const displayReferralEvents = referralEventsError ? fallbackReferralEvents : (referralEvents || []);
-  const displayAppliedReferrals = appliedReferralsError ? fallbackAppliedReferrals : (appliedReferrals || []);
+  const displayCompanies = !companiesError ? companies : [];
+  const displayReferralEvents = !referralEventsError ? referralEvents : [];
+  const displayAppliedReferrals = !appliedReferralsError ? appliedReferrals : [];
 
   // Generate categories dynamically from API data - only when companies data is available
-  const categories = displayCompanies && displayCompanies.length > 0 
-    ? ['All', ...Array.from(new Set(displayCompanies.flatMap((company: any) => company.tags || []))).sort()]
-    : ['All'];
+  const categories =
+    displayCompanies && displayCompanies.length > 0
+      ? [
+          'All',
+          ...Array.from(
+            new Set(displayCompanies.flatMap((company: any) => company.tags || []))
+          ).sort(),
+        ]
+      : ['All'];
 
   // Filter companies based on search and category - only when companies data is available
-  const filteredCompanies = displayCompanies && displayCompanies.length > 0 
-    ? displayCompanies.filter((company: any) => {
-        const matchesSearch = company.name?.toLowerCase().includes(searchTerm.toLowerCase()) || false;
-        const matchesCategory = selectedCategory === 'All' || (company.tags && company.tags.includes(selectedCategory));
-        return matchesSearch && matchesCategory;
-      })
-    : [];
+  const filteredCompanies =
+    displayCompanies && displayCompanies.length > 0
+      ? displayCompanies.filter((company: any) => {
+          const matchesSearch =
+            company.name?.toLowerCase().includes(searchTerm.toLowerCase()) || false;
+          const matchesCategory =
+            selectedCategory === 'All' || (company.tags && company.tags.includes(selectedCategory));
+          return matchesSearch && matchesCategory;
+        })
+      : [];
 
   const formatDate = (dateString: string) => {
+    console.log('date', dateString);
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
-      year: 'numeric'
+      year: 'numeric',
     });
   };
 
-    const addReferralEvent = () => {
-
-    };
+  const addReferralEvent = () => {};
 
   const getDaysUntilExpiry = (dateString: string) => {
     const today = new Date();
@@ -182,19 +144,18 @@ export default function DashboardPage() {
   };
 
   // @ts-ignore
-    return (
+  return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Welcome Header */}
         <div className="mb-8">
           <h1 className="text-3xl lg:text-4xl font-bold text-black mb-4">
-            Welcome back, {user?.name}! with the role {user?.role}👋
+            Welcome back, {user?.name}!👋
           </h1>
           <p className="text-lg text-gray-600">
-            {user?.role === 'referrer' 
+            {user?.role === 'referrer'
               ? 'Manage your referral events and help candidates find their dream jobs.'
-              : 'Discover job referral opportunities from top companies and boost your career.'
-            }
+              : 'Discover job referral opportunities from top companies and boost your career.'}
           </p>
         </div>
 
@@ -257,11 +218,16 @@ export default function DashboardPage() {
                   <div className="text-red-500 mb-4">
                     <XCircle className="h-12 w-12 mx-auto" />
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Error loading referral events</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    Error loading referral events
+                  </h3>
                   <p className="text-gray-600 mb-4">{referralEventsError}</p>
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 text-sm text-blue-800">
                     <p className="font-medium mb-2">💡 API Server Not Available</p>
-                    <p>Showing fallback data. To see real-time data, start your API server at <code className="bg-blue-100 px-2 py-1 rounded">localhost:4000</code></p>
+                    <p>
+                      Showing fallback data. To see real-time data, start your API server at{' '}
+                      <code className="bg-blue-100 px-2 py-1 rounded">localhost:4000</code>
+                    </p>
                   </div>
                   <Button onClick={refetchReferralEvents} variant="outline">
                     Try Again
@@ -270,110 +236,159 @@ export default function DashboardPage() {
               )}
 
               {/* Referral Events */}
-              {!referralEventsLoading && !referralEventsError && displayReferralEvents.map((event) => {
-                const daysLeft = getDaysUntilExpiry(event.expiryDate);
-                const isExpiringSoon = daysLeft <= 3;
-                const isExpired = daysLeft < 0;
+              {!referralEventsLoading &&
+                !referralEventsError &&
+                displayReferralEvents.map(event => {
+                  console.log('referral event', event);
+                  const daysLeft = getDaysUntilExpiry(event.expiryDate);
+                  const isExpiringSoon = daysLeft <= 3;
+                  const isExpired = daysLeft < 0;
 
-                return (
-                  <Card key={event.id} className={`hover:shadow-lg transition-shadow duration-200 ${isExpired ? 'opacity-60' : ''}`}>
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-                            <img 
-                              src={event.logo} 
-                              alt={`${event.company} logo`}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                // Fallback to company initial if image fails to load
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = 'none';
-                                target.nextElementSibling?.classList.remove('hidden');
-                              }}
-                            />
-                            <div className="hidden w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
-                              {event.company.charAt(0).toUpperCase()}
+                  return (
+                    <Card
+                      key={event.id}
+                      className={`hover:shadow-lg transition-shadow duration-200 ${isExpired ? 'opacity-60' : ''}`}
+                    >
+                      <CardHeader>
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                              <img
+                                src={event.logo}
+                                alt={`${event.company} logo`}
+                                className="w-full h-full object-cover"
+                                onError={e => {
+                                  // Fallback to company initial if image fails to load
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                  target.nextElementSibling?.classList.remove('hidden');
+                                }}
+                              />
+                              <div className="hidden w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                                {event.company.charAt(0).toUpperCase()}
+                              </div>
+                            </div>
+                            <div>
+                              <CardTitle className="text-xl">{event.jobTitle}</CardTitle>
+                              <CardDescription className="text-lg font-medium">
+                                {event.company}
+                              </CardDescription>
                             </div>
                           </div>
-                          <div>
-                            <CardTitle className="text-xl">{event.jobTitle}</CardTitle>
-                            <CardDescription className="text-lg font-medium">
-                              {event.company}
-                            </CardDescription>
+                          <div className="text-right">
+                            {isExpired ? (
+                              <Badge variant="destructive">Expired</Badge>
+                            ) : isExpiringSoon ? (
+                              <Badge variant="destructive">Expires in {daysLeft} days</Badge>
+                            ) : (
+                              <Badge variant="secondary">
+                                Expires {formatDate(event.expiryDate)}
+                              </Badge>
+                            )}
                           </div>
                         </div>
-                        <div className="text-right">
-                          {isExpired ? (
-                            <Badge variant="destructive">Expired</Badge>
-                          ) : isExpiringSoon ? (
-                            <Badge variant="destructive">Expires in {daysLeft} days</Badge>
-                          ) : (
-                            <Badge variant="secondary">Expires {formatDate(event.expiryDate)}</Badge>
-                          )}
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                          <div className="flex items-center">
-                            <MapPin className="h-4 w-4 mr-1" />
-                            {event.location}
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                            <div className="flex items-center">
+                              <MapPin className="h-4 w-4 mr-1" />
+                              {event.location}
+                            </div>
+                            <div className="flex items-center">
+                              <Users className="h-4 w-4 mr-1" />
+                              {event.applicants}/{event.maxApplicants} applicants
+                            </div>
+                            <div className="flex items-center">
+                              <Calendar className="h-4 w-4 mr-1" />
+                              Posted by {event.postedBy}
+                            </div>
                           </div>
-                          <div className="flex items-center">
-                            <Users className="h-4 w-4 mr-1" />
-                            {event.applicants}/{event.maxApplicants} applicants
+
+                          <p className="text-gray-700">{event.requirements}</p>
+
+                          <div className="flex flex-wrap gap-2">
+                            {event.tags.map((tag, index) => (
+                              <Badge key={index} variant="outline" className="text-xs">
+                                {tag}
+                              </Badge>
+                            ))}
                           </div>
-                          <div className="flex items-center">
-                            <Calendar className="h-4 w-4 mr-1" />
-                            Posted by {event.postedBy}
+
+                          <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                            <Button
+                              variant="outline"
+                              className="flex-1"
+                              onClick={() => window.open(event.jobUrl, '_blank')}
+                            >
+                              View Job Posting
+                            </Button>
+                            <Dialog
+                              open={selectedReferralEvent?.id === event.id}
+                              onOpenChange={open => {
+                                if (!open) setSelectedReferralEvent(null);
+                              }}
+                            >
+                              <DialogTrigger asChild>
+                                <Button
+                                  className="flex-1 bg-black hover:bg-gray-800 text-white"
+                                  disabled={isExpired || event.applicants >= event.maxApplicants}
+                                  onClick={() => setSelectedReferralEvent(event)}
+                                >
+                                  {isExpired
+                                    ? 'Expired'
+                                    : event.applicants >= event.maxApplicants
+                                      ? 'Full'
+                                      : 'Apply for Referral'}
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-2xl">
+                                <ReferralRequestForm
+                                  company={{
+                                    name: event.company,
+                                    logo: event.logo,
+                                    id: event.id,
+                                    tags: event.tags,
+                                    careersUrl: event.jobUrl,
+                                  }}
+                                  eventId={event.id}
+                                  onClose={() => setSelectedReferralEvent(null)}
+                                />
+                              </DialogContent>
+                            </Dialog>
+                          </div>
+
+                          {/* Progress bar */}
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div
+                              className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
+                              style={{
+                                width: `${(event.applicants / event.maxApplicants) * 100}%`,
+                              }}
+                            ></div>
                           </div>
                         </div>
-
-                        <p className="text-gray-700">{event.requirements}</p>
-
-                        <div className="flex flex-wrap gap-2">
-                          {event.tags.map((tag, index) => (
-                            <Badge key={index} variant="outline" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-
-                        <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                          <Button
-                            variant="outline"
-                            className="flex-1"
-                            onClick={() => window.open(event.jobUrl, '_blank')}
-                          >
-                            View Job Posting
-                          </Button>
-                        </div>
-
-                        {/* Progress bar */}
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div
-                            className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
-                            style={{ width: `${(event.applicants / event.maxApplicants) * 100}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
 
               {/* Empty State */}
-              {!referralEventsLoading && !referralEventsError && displayReferralEvents.length === 0 && (
-                <div className="text-center py-8">
-                  <div className="text-gray-400 mb-4">
-                    <Filter className="h-12 w-12 mx-auto" />
+              {!referralEventsLoading &&
+                !referralEventsError &&
+                displayReferralEvents.length === 0 && (
+                  <div className="text-center py-8">
+                    <div className="text-gray-400 mb-4">
+                      <Filter className="h-12 w-12 mx-auto" />
+                    </div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      No referral events yet
+                    </h3>
+                    <p className="text-gray-600">
+                      Create your first referral event to start helping candidates.
+                    </p>
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No referral events yet</h3>
-                  <p className="text-gray-600">Create your first referral event to start helping candidates.</p>
-                </div>
-              )}
+                )}
             </div>
           </div>
         )}
@@ -437,11 +452,16 @@ export default function DashboardPage() {
                     <div className="text-red-500 mb-4">
                       <XCircle className="h-12 w-12 mx-auto" />
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Error loading applied referrals</h3>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      Error loading applied referrals
+                    </h3>
                     <p className="text-gray-600 mb-4">{appliedReferralsError}</p>
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 text-sm text-blue-800">
                       <p className="font-medium mb-2">💡 API Server Not Available</p>
-                      <p>Showing fallback data. To see real-time data, start your API server at <code className="bg-blue-100 px-2 py-1 rounded">localhost:4000</code></p>
+                      <p>
+                        Showing fallback data. To see real-time data, start your API server at{' '}
+                        <code className="bg-blue-100 px-2 py-1 rounded">localhost:4000</code>
+                      </p>
                     </div>
                     <Button onClick={refetchAppliedReferrals} variant="outline">
                       Try Again
@@ -450,79 +470,96 @@ export default function DashboardPage() {
                 )}
 
                 {/* Applied Referrals */}
-                {!appliedReferralsLoading && !appliedReferralsError && displayAppliedReferrals.map((referral) => (
-                  <Card key={referral.id} className="hover:shadow-lg transition-shadow duration-200">
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-                            <img 
-                              src={referral.logo} 
-                              alt={`${referral.company} logo`}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                // Fallback to company initial if image fails to load
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = 'none';
-                                target.nextElementSibling?.classList.remove('hidden');
-                              }}
-                            />
-                            <div className="hidden w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
-                              {referral.company.charAt(0).toUpperCase()}
+                {!appliedReferralsLoading &&
+                  !appliedReferralsError &&
+                  displayAppliedReferrals.map(referral => (
+                    <Card
+                      key={referral.id}
+                      className="hover:shadow-lg transition-shadow duration-200"
+                    >
+                      <CardHeader>
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                              <img
+                                src={referral.logo}
+                                alt={`${referral.company} logo`}
+                                className="w-full h-full object-cover"
+                                onError={e => {
+                                  // Fallback to company initial if image fails to load
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                  target.nextElementSibling?.classList.remove('hidden');
+                                }}
+                              />
+                              <div className="hidden w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                                {referral?.company?.charAt(0).toUpperCase()}
+                              </div>
+                            </div>
+                            <div>
+                              <CardTitle className="text-xl">{referral.jobTitle}</CardTitle>
+                              <CardDescription className="text-lg font-medium">
+                                {referral?.company}
+                              </CardDescription>
                             </div>
                           </div>
-                          <div>
-                            <CardTitle className="text-xl">{referral.jobTitle}</CardTitle>
-                            <CardDescription className="text-lg font-medium">
-                              {referral.company}
-                            </CardDescription>
-                          </div>
+                          <Badge
+                            className={`${getStatusColor(referral.status)} flex items-center gap-1`}
+                          >
+                            {getStatusIcon(referral.status)}
+                            {referral.status?.charAt(0).toUpperCase() + referral.status.slice(1)}
+                          </Badge>
                         </div>
-                        <Badge className={`${getStatusColor(referral.status)} flex items-center gap-1`}>
-                          {getStatusIcon(referral.status)}
-                          {referral.status.charAt(0).toUpperCase() + referral.status.slice(1)}
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                          <div className="flex items-center">
-                            <MapPin className="h-4 w-4 mr-1" />
-                            {referral.location}
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                            <div className="flex items-center">
+                              <MapPin className="h-4 w-4 mr-1" />
+                              {referral.location}
+                            </div>
+                            <div className="flex items-center">
+                              <Calendar className="h-4 w-4 mr-1" />
+                              Applied on {formatDate(referral.created_at)}
+                            </div>
+                            <div className="flex items-center">
+                              <Calendar className="h-4 w-4 mr-1" />
+                              Expires on {formatDate(referral.expiry_date)}
+                            </div>
+                            <div>
+                              <strong>Referrer:</strong> {referral.posted_by}
+                            </div>
                           </div>
-                          <div className="flex items-center">
-                            <Calendar className="h-4 w-4 mr-1" />
-                            Applied on {formatDate(referral.appliedDate)}
-                          </div>
-                          <div>
-                            <strong>Referrer:</strong> {referral.referrerName}
-                          </div>
-                        </div>
 
-                        {referral.notes && (
-                          <div className="bg-gray-50 p-3 rounded-lg">
-                            <p className="text-sm font-medium text-gray-700 mb-1">Status Notes:</p>
-                            <p className="text-sm text-gray-600">{referral.notes}</p>
-                          </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                          {referral.notes && (
+                            <div className="bg-gray-50 p-3 rounded-lg">
+                              <p className="text-sm font-medium text-gray-700 mb-1">
+                                Status Notes:
+                              </p>
+                              <p className="text-sm text-gray-600">{referral.notes}</p>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
 
                 {/* Empty State */}
-                {!appliedReferralsLoading && !appliedReferralsError && displayAppliedReferrals.length === 0 && (
-                  <div className="text-center py-12">
-                    <div className="text-gray-400 mb-4">
-                      <Filter className="h-12 w-12 mx-auto" />
+                {!appliedReferralsLoading &&
+                  !appliedReferralsError &&
+                  displayAppliedReferrals.length === 0 && (
+                    <div className="text-center py-12">
+                      <div className="text-gray-400 mb-4">
+                        <Filter className="h-12 w-12 mx-auto" />
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">
+                        No applications yet
+                      </h3>
+                      <p className="text-gray-600">
+                        Browse companies and active events to start applying for referrals.
+                      </p>
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No applications yet</h3>
-                    <p className="text-gray-600">
-                      Browse companies and active events to start applying for referrals.
-                    </p>
-                  </div>
-                )}
+                  )}
               </div>
             </TabsContent>
 
@@ -536,7 +573,7 @@ export default function DashboardPage() {
                     <Input
                       placeholder="Search companies..."
                       value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onChange={e => setSearchTerm(e.target.value)}
                       className="pl-10 w-full sm:w-64"
                     />
                   </div>
@@ -546,7 +583,9 @@ export default function DashboardPage() {
                     </SelectTrigger>
                     <SelectContent>
                       {categories.map(category => (
-                        <SelectItem key={category} value={category}>{category}</SelectItem>
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -554,17 +593,17 @@ export default function DashboardPage() {
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredCompanies.map((company) => (
+                {filteredCompanies.map(company => (
                   <Card key={company.id} className="hover:shadow-lg transition-shadow duration-200">
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center space-x-3">
                           <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-                            <img 
-                              src={company.logo} 
+                            <img
+                              src={company.logo}
                               alt={`${company.name} logo`}
                               className="w-full h-full object-cover"
-                              onError={(e) => {
+                              onError={e => {
                                 // Fallback to company initial if image fails to load
                                 const target = e.target as HTMLImageElement;
                                 target.style.display = 'none';
@@ -590,13 +629,7 @@ export default function DashboardPage() {
                             </Button>
                           </DialogTrigger>
                           <DialogContent className="max-w-2xl">
-                            <DialogHeader>
-                              <DialogTitle>Request Referral - {company.name}</DialogTitle>
-                              <DialogDescription>
-                                Fill out the form below to request a referral for {company.name}
-                              </DialogDescription>
-                            </DialogHeader>
-                            <ReferralRequestForm company={company} />
+                            <ReferralRequestForm company={company} eventId={-1} />
                           </DialogContent>
                         </Dialog>
                       </div>
@@ -667,7 +700,9 @@ export default function DashboardPage() {
                     <div className="text-red-500 mb-4">
                       <XCircle className="h-12 w-12 mx-auto" />
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Error loading referral events</h3>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      Error loading referral events
+                    </h3>
                     <p className="text-gray-600 mb-4">{referralEventsError}</p>
                     <Button onClick={refetchReferralEvents} variant="outline">
                       Try Again
@@ -676,120 +711,156 @@ export default function DashboardPage() {
                 )}
 
                 {/* Referral Events */}
-                {!referralEventsLoading && !referralEventsError && displayReferralEvents.map((event) => {
-                  const daysLeft = getDaysUntilExpiry(event.expiryDate);
-                  const isExpiringSoon = daysLeft <= 3;
-                  const isExpired = daysLeft < 0;
+                {!referralEventsLoading &&
+                  !referralEventsError &&
+                  displayReferralEvents.map(event => {
+                    const daysLeft = getDaysUntilExpiry(event.expiryDate);
+                    const isExpiringSoon = daysLeft <= 3;
+                    const isExpired = daysLeft < 0;
 
-                  return (
-                    <Card key={event.id} className={`hover:shadow-lg transition-shadow duration-200 ${isExpired ? 'opacity-60' : ''}`}>
-                      <CardHeader>
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-                              <img 
-                                src={event.logo} 
-                                alt={`${event.company} logo`}
-                                className="w-full h-full object-cover"
-                                onError={(e) => {
-                                  // Fallback to company initial if image fails to load
-                                  const target = e.target as HTMLImageElement;
-                                  target.style.display = 'none';
-                                  target.nextElementSibling?.classList.remove('hidden');
-                                }}
-                              />
-                              <div className="hidden w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
-                                {event.company.charAt(0).toUpperCase()}
+                    return (
+                      <Card
+                        key={event.id}
+                        className={`hover:shadow-lg transition-shadow duration-200 ${isExpired ? 'opacity-60' : ''}`}
+                      >
+                        <CardHeader>
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-center space-x-4">
+                              <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                                <img
+                                  src={event.logo}
+                                  alt={`${event.company} logo`}
+                                  className="w-full h-full object-cover"
+                                  onError={e => {
+                                    // Fallback to company initial if image fails to load
+                                    const target = e.target as HTMLImageElement;
+                                    target.style.display = 'none';
+                                    target.nextElementSibling?.classList.remove('hidden');
+                                  }}
+                                />
+                                <div className="hidden w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                                  {event.company.charAt(0).toUpperCase()}
+                                </div>
+                              </div>
+                              <div>
+                                <CardTitle className="text-xl">{event.jobTitle}</CardTitle>
+                                <CardDescription className="text-lg font-medium">
+                                  {event.company}
+                                </CardDescription>
                               </div>
                             </div>
-                            <div>
-                              <CardTitle className="text-xl">{event.jobTitle}</CardTitle>
-                              <CardDescription className="text-lg font-medium">
-                                {event.company}
-                              </CardDescription>
+                            <div className="text-right">
+                              {isExpired ? (
+                                <Badge variant="destructive">Expired</Badge>
+                              ) : isExpiringSoon ? (
+                                <Badge variant="destructive">Expires in {daysLeft} days</Badge>
+                              ) : (
+                                <Badge variant="secondary">
+                                  Expires {formatDate(event.expiryDate)}
+                                </Badge>
+                              )}
                             </div>
                           </div>
-                          <div className="text-right">
-                            {isExpired ? (
-                              <Badge variant="destructive">Expired</Badge>
-                            ) : isExpiringSoon ? (
-                              <Badge variant="destructive">Expires in {daysLeft} days</Badge>
-                            ) : (
-                              <Badge variant="secondary">Expires {formatDate(event.expiryDate)}</Badge>
-                            )}
-                          </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-4">
-                          <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                            <div className="flex items-center">
-                              <MapPin className="h-4 w-4 mr-1" />
-                              {event.location}
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-4">
+                            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                              <div className="flex items-center">
+                                <MapPin className="h-4 w-4 mr-1" />
+                                {event.location}
+                              </div>
+                              <div className="flex items-center">
+                                <Users className="h-4 w-4 mr-1" />
+                                {event.applicants}/{event.maxApplicants} applicants
+                              </div>
+                              <div className="flex items-center">
+                                <Calendar className="h-4 w-4 mr-1" />
+                                Posted by {event.postedBy}
+                              </div>
                             </div>
-                            <div className="flex items-center">
-                              <Users className="h-4 w-4 mr-1" />
-                              {event.applicants}/{event.maxApplicants} applicants
+
+                            <p className="text-gray-700">{event.requirements}</p>
+
+                            <div className="flex flex-wrap gap-2">
+                              {event.tags.map((tag, index) => (
+                                <Badge key={index} variant="outline" className="text-xs">
+                                  {tag}
+                                </Badge>
+                              ))}
                             </div>
-                            <div className="flex items-center">
-                              <Calendar className="h-4 w-4 mr-1" />
-                              Posted by {event.postedBy}
+
+                            <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                              <Button
+                                variant="outline"
+                                className="flex-1"
+                                onClick={() => window.open(event.jobUrl, '_blank')}
+                              >
+                                View Job Posting
+                              </Button>
+                              <Dialog
+                                open={selectedReferralEvent?.id === event.id}
+                                onOpenChange={open => {
+                                  if (!open) setSelectedReferralEvent(null);
+                                }}
+                              >
+                                <DialogTrigger asChild>
+                                  <Button
+                                    className="flex-1 bg-black hover:bg-gray-800 text-white"
+                                    disabled={isExpired || event.applicants >= event.maxApplicants}
+                                    onClick={() => setSelectedReferralEvent(event)}
+                                  >
+                                    {isExpired
+                                      ? 'Expired'
+                                      : event.applicants >= event.maxApplicants
+                                        ? 'Full'
+                                        : 'Apply for Referral'}
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-2xl">
+                                  <ReferralRequestForm
+                                    company={{
+                                      name: event.company,
+                                      logo: event.logo,
+                                      id: event.id,
+                                      tags: event.tags,
+                                      careersUrl: event.jobUrl,
+                                    }}
+                                    eventId={event.id}
+                                    onClose={() => setSelectedReferralEvent(null)}
+                                  />
+                                </DialogContent>
+                              </Dialog>
+                            </div>
+
+                            {/* Progress bar */}
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div
+                                className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
+                                style={{
+                                  width: `${(event.applicants / event.maxApplicants) * 100}%`,
+                                }}
+                              ></div>
                             </div>
                           </div>
-
-                          <p className="text-gray-700">{event.requirements}</p>
-
-                          <div className="flex flex-wrap gap-2">
-                            {event.tags.map((tag, index) => (
-                              <Badge key={index} variant="outline" className="text-xs">
-                                {tag}
-                              </Badge>
-                            ))}
-                          </div>
-
-                          <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                            <Button
-                              variant="outline"
-                              className="flex-1"
-                              onClick={() => window.open(event.jobUrl, '_blank')}
-                            >
-                              View Job Posting
-                            </Button>
-                            <Button
-                              className="flex-1 bg-black hover:bg-gray-800 text-white"
-                              disabled={isExpired || event.applicants >= event.maxApplicants}
-                            >
-                              {isExpired ? 'Expired' : 
-                               event.applicants >= event.maxApplicants ? 'Full' : 
-                               'Apply for Referral'}
-                            </Button>
-                          </div>
-
-                          {/* Progress bar */}
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div
-                              className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
-                              style={{ width: `${(event.applicants / event.maxApplicants) * 100}%` }}
-                            ></div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
 
                 {/* Empty State */}
-                {!referralEventsLoading && !referralEventsError && displayReferralEvents.length === 0 && (
-                  <div className="text-center py-12">
-                    <div className="text-gray-400 mb-4">
-                      <Filter className="h-12 w-12 mx-auto" />
+                {!referralEventsLoading &&
+                  !referralEventsError &&
+                  displayReferralEvents.length === 0 && (
+                    <div className="text-center py-12">
+                      <div className="text-gray-400 mb-4">
+                        <Filter className="h-12 w-12 mx-auto" />
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No active events</h3>
+                      <p className="text-gray-600">
+                        Check back later for new referral opportunities.
+                      </p>
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No active events</h3>
-                    <p className="text-gray-600">
-                      Check back later for new referral opportunities.
-                    </p>
-                  </div>
-                )}
+                  )}
               </div>
             </TabsContent>
           </Tabs>

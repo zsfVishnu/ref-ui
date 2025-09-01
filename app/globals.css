@@ -83,11 +83,11 @@
 
 /* Custom tab styling for smoother appearance */
 @layer components {
-  .smooth-tabs [data-state="active"] {
+  .smooth-tabs [data-state='active'] {
     @apply rounded-full;
   }
-  
-  .smooth-tabs [role="tab"] {
+
+  .smooth-tabs [role='tab'] {
     @apply rounded-full transition-all duration-200;
   }
 }

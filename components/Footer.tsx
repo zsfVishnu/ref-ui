@@ -2,7 +2,7 @@ import { Check, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
-import Link from "next/link";
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -25,7 +25,11 @@ export default function Footer() {
             <h3 className="font-bold text-black text-lg mb-6">Contact</h3>
             <div className="space-y-4 text-black">
               <p>123 Job Seeker Street, City, State, 12345</p>
-              <p>General Inquiries:<br />info@getreferral.com</p>
+              <p>
+                General Inquiries:
+                <br />
+                info@getreferral.com
+              </p>
             </div>
           </div>
 
@@ -68,24 +72,22 @@ export default function Footer() {
                 <label htmlFor="email" className="block text-black font-medium mb-2">
                   Email *
                 </label>
-                <Input 
+                <Input
                   id="email"
-                  type="email" 
+                  type="email"
                   placeholder="Enter your email"
                   className="bg-white border-black text-black"
                 />
               </div>
-              
+
               <div className="flex items-center space-x-2">
                 <Checkbox id="newsletter" />
                 <label htmlFor="newsletter" className="text-black text-sm">
                   Yes, subscribe me to your newsletter. *
                 </label>
               </div>
-              
-              <Button className="w-full bg-black hover:bg-gray-800 text-white">
-                Subscribe
-              </Button>
+
+              <Button className="w-full bg-black hover:bg-gray-800 text-white">Subscribe</Button>
             </div>
           </div>
         </div>
@@ -93,9 +95,7 @@ export default function Footer() {
         {/* Social Media Links */}
         <div className="border-t border-black/20 pt-8">
           <div className="flex justify-between items-center">
-            <div className="text-black text-sm">
-              © 2024 Get Referral. All rights reserved.
-            </div>
+            <div className="text-black text-sm">© 2024 Get Referral. All rights reserved.</div>
             <div className="flex space-x-6">
               <div>
                 <h4 className="font-semibold text-black mb-2">Twitter</h4>

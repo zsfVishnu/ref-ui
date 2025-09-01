@@ -3,19 +3,19 @@ import { Grid3X3, MessageSquare, Zap } from 'lucide-react';
 const features = [
   {
     icon: Grid3X3,
-    title: "Simplified Referral Management",
-    description: ""
+    title: 'Simplified Referral Management',
+    description: '',
   },
   {
     icon: MessageSquare,
-    title: "Seamless Referral Communication",
-    description: ""
+    title: 'Seamless Referral Communication',
+    description: '',
   },
   {
     icon: Zap,
-    title: "Enhanced Job Application Experience",
-    description: ""
-  }
+    title: 'Enhanced Job Application Experience',
+    description: '',
+  },
 ];
 
 export default function TailoredSection() {
@@ -26,9 +26,9 @@ export default function TailoredSection() {
           {/* Left Illustration */}
           <div className="relative">
             <div className="relative w-full h-80 lg:h-96">
-              <img 
-                src="https://images.pexels.com/photos/3183153/pexels-photo-3183153.jpeg?auto=compress&cs=tinysrgb&w=600" 
-                alt="Professional networking illustration" 
+              <img
+                src="https://images.pexels.com/photos/3183153/pexels-photo-3183153.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt="Professional networking illustration"
                 className="w-full h-full object-cover rounded-2xl shadow-lg"
               />
               <div className="absolute inset-0 bg-gradient-to-br from-blue-100/40 via-transparent to-purple-100/40 rounded-2xl"></div>
@@ -41,9 +41,8 @@ export default function TailoredSection() {
               Tailored for Job Seekers and Referrers
             </h2>
             <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-              Our platform is designed by professionals who understand the challenges 
-              of the job search process, ensuring a user-friendly experience for both 
-              candidates and referrers.
+              Our platform is designed by professionals who understand the challenges of the job
+              search process, ensuring a user-friendly experience for both candidates and referrers.
             </p>
 
             <div className="space-y-6">
@@ -53,9 +52,7 @@ export default function TailoredSection() {
                     <feature.icon className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-black text-lg">
-                      {feature.title}
-                    </h3>
+                    <h3 className="font-semibold text-black text-lg">{feature.title}</h3>
                   </div>
                 </div>
               ))}

@@ -2,7 +2,7 @@
 export const API_CONFIG = {
   // Base URL for the API - can be changed here or through environment variables
   BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000',
-  
+
   // API endpoints
   ENDPOINTS: {
     JOBS: '/jobs',
@@ -10,7 +10,7 @@ export const API_CONFIG = {
     REFERRALS: '/referrals',
     USERS: '/users',
   },
-  
+
   // Request timeout in milliseconds
   TIMEOUT: 10000,
 };

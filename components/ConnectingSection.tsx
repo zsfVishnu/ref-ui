@@ -13,10 +13,9 @@ export default function ConnectingSection() {
           {/* Right Content */}
           <div>
             <p className="text-lg text-black leading-relaxed">
-              Get Referral is a platform designed to connect job seekers with 
-              company employees who can refer them for job openings. We provide 
-              a seamless and efficient way for candidates to request referrals 
-              and for referrers to post and manage referral events.
+              Get Referral is a platform designed to connect job seekers with company employees who
+              can refer them for job openings. We provide a seamless and efficient way for
+              candidates to request referrals and for referrers to post and manage referral events.
             </p>
           </div>
         </div>

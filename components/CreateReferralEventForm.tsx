@@ -5,22 +5,41 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
-import {useAuth} from "@/contexts/AuthContext";
+import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
 const companies = [
-  'Google', 'Microsoft', 'Amazon', 'Apple', 'Meta', 'Netflix', 'Tesla', 'Uber',
-  'Airbnb', 'Spotify', 'Adobe', 'Salesforce', 'Oracle', 'IBM', 'Intel'
+  'Google',
+  'Microsoft',
+  'Amazon',
+  'Apple',
+  'Meta',
+  'Netflix',
+  'Tesla',
+  'Uber',
+  'Airbnb',
+  'Spotify',
+  'Adobe',
+  'Salesforce',
+  'Oracle',
+  'IBM',
+  'Intel',
 ];
 
 export default function CreateReferralEventForm({ onClose }: { onClose?: () => void }) {
-    const { user } = useAuth();
-    const { toast } = useToast();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     company: '',
     jobTitle: '',
@@ -35,7 +54,7 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("starting submit");
+    console.log('starting submit');
     const newErrors: Record<string, string> = {};
 
     if (!formData.company) newErrors.company = 'Company is required';
@@ -70,12 +89,12 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
         body: JSON.stringify(referralEvent),
       })
         .then(res => {
-            console.log(res);
+          console.log(res);
           if (!res.ok) throw new Error('Failed to create referral event');
           return res.json();
         })
         .then(data => {
-            console.log("data", data);
+          console.log('data', data);
           toast({
             title: 'Success',
             description: 'Referral event created successfully!',
@@ -84,7 +103,7 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
           if (onClose) onClose();
         })
         .catch(err => {
-            console.error(err);
+          console.error(err);
           toast({
             title: 'Error',
             description: err.message || 'Failed to create referral event.',
@@ -107,13 +126,15 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="company">Company *</Label>
-          <Select value={formData.company} onValueChange={(value) => handleChange('company', value)}>
+          <Select value={formData.company} onValueChange={value => handleChange('company', value)}>
             <SelectTrigger className={`mt-1 ${errors.company ? 'border-red-500' : ''}`}>
               <SelectValue placeholder="Select company" />
             </SelectTrigger>
             <SelectContent>
               {companies.map(company => (
-                <SelectItem key={company} value={company}>{company}</SelectItem>
+                <SelectItem key={company} value={company}>
+                  {company}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -125,7 +146,7 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
           <Input
             id="jobTitle"
             value={formData.jobTitle}
-            onChange={(e) => handleChange('jobTitle', e.target.value)}
+            onChange={e => handleChange('jobTitle', e.target.value)}
             className={`mt-1 ${errors.jobTitle ? 'border-red-500' : ''}`}
             placeholder="e.g. Senior Software Engineer"
           />
@@ -138,9 +159,9 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
         <Input
           id="jobUrl"
           value={formData.jobUrl}
-          onChange={(e) => handleChange('jobUrl', e.target.value)}
-            className={`mt-1 ${errors.jobUrl ? 'border-red-500' : ''}`}
-            placeholder="https://careers.company.com/jobs/123456"
+          onChange={e => handleChange('jobUrl', e.target.value)}
+          className={`mt-1 ${errors.jobUrl ? 'border-red-500' : ''}`}
+          placeholder="https://careers.company.com/jobs/123456"
         />
         {errors.jobUrl && <p className="mt-1 text-sm text-red-600">{errors.jobUrl}</p>}
       </div>
@@ -151,7 +172,7 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
           <Input
             id="location"
             value={formData.location}
-            onChange={(e) => handleChange('location', e.target.value)}
+            onChange={e => handleChange('location', e.target.value)}
             className={`mt-1 ${errors.location ? 'border-red-500' : ''}`}
             placeholder="e.g. San Francisco, CA"
           />
@@ -166,11 +187,13 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
             min="1"
             max="50"
             value={formData.maxApplicants}
-            onChange={(e) => handleChange('maxApplicants', e.target.value)}
+            onChange={e => handleChange('maxApplicants', e.target.value)}
             className={`mt-1 ${errors.maxApplicants ? 'border-red-500' : ''}`}
             placeholder="e.g. 10"
           />
-          {errors.maxApplicants && <p className="mt-1 text-sm text-red-600">{errors.maxApplicants}</p>}
+          {errors.maxApplicants && (
+            <p className="mt-1 text-sm text-red-600">{errors.maxApplicants}</p>
+          )}
         </div>
       </div>
 
@@ -183,20 +206,20 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
               className={`w-full mt-1 justify-start text-left font-normal ${errors.expiryDate ? 'border-red-500' : ''}`}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {expiryDate ? format(expiryDate, "PPP") : "Select expiry date"}
+              {expiryDate ? format(expiryDate, 'PPP') : 'Select expiry date'}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"
               selected={expiryDate}
-              onSelect={(date) => {
+              onSelect={date => {
                 setExpiryDate(date);
                 if (errors.expiryDate) {
                   setErrors(prev => ({ ...prev, expiryDate: '' }));
                 }
               }}
-              disabled={(date) => date < new Date()}
+              disabled={date => date < new Date()}
               initialFocus
             />
           </PopoverContent>
@@ -209,7 +232,7 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
         <Textarea
           id="requirements"
           value={formData.requirements}
-          onChange={(e) => handleChange('requirements', e.target.value)}
+          onChange={e => handleChange('requirements', e.target.value)}
           className={`mt-1 ${errors.requirements ? 'border-red-500' : ''}`}
           rows={4}
           placeholder="Describe the role requirements, preferred qualifications, and any additional details..."
@@ -222,7 +245,7 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
         <Input
           id="tags"
           value={formData.tags}
-          onChange={(e) => handleChange('tags', e.target.value)}
+          onChange={e => handleChange('tags', e.target.value)}
           className="mt-1"
           placeholder="e.g. React, Node.js, TypeScript (comma separated)"
         />

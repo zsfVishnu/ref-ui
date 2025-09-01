@@ -5,18 +5,31 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { 
-  Search, 
-  Download, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Calendar, 
+import {
+  Search,
+  Download,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
   ExternalLink,
   Filter,
   CheckCircle,
@@ -30,7 +43,7 @@ import {
   Eye,
   ChevronRight,
   ArrowLeft,
-  Building
+  Building,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -53,7 +66,8 @@ const initialMockApplicants = [
     status: 'pending',
     linkedinUrl: 'https://linkedin.com/in/alexjohnson',
     resumeUrl: '/resumes/alex-johnson-resume.pdf',
-    message: 'I am very excited about this opportunity at Google. I have been working with React and Node.js for the past 5 years and would love to contribute to your team.',
+    message:
+      'I am very excited about this opportunity at Google. I have been working with React and Node.js for the past 5 years and would love to contribute to your team.',
     referralEventId: 1,
     notes: '',
     rating: 0,
@@ -75,7 +89,8 @@ const initialMockApplicants = [
     status: 'shortlisted',
     linkedinUrl: 'https://linkedin.com/in/sarahchen',
     resumeUrl: '/resumes/sarah-chen-resume.pdf',
-    message: 'With 4 years of PM experience in B2B SaaS, I believe I can bring valuable insights to Microsoft\'s product team.',
+    message:
+      "With 4 years of PM experience in B2B SaaS, I believe I can bring valuable insights to Microsoft's product team.",
     referralEventId: 2,
     notes: 'Strong background in B2B products. Good cultural fit.',
     rating: 4,
@@ -97,7 +112,8 @@ const initialMockApplicants = [
     status: 'rejected',
     linkedinUrl: 'https://linkedin.com/in/michaelrodriguez',
     resumeUrl: '/resumes/michael-rodriguez-resume.pdf',
-    message: 'PhD in Statistics with 6 years of industry experience in ML and data science. Excited to work on Amazon\'s recommendation systems.',
+    message:
+      "PhD in Statistics with 6 years of industry experience in ML and data science. Excited to work on Amazon's recommendation systems.",
     referralEventId: 3,
     notes: 'Overqualified for the position. Looking for more senior role.',
     rating: 3,
@@ -119,7 +135,8 @@ const initialMockApplicants = [
     status: 'pending',
     linkedinUrl: 'https://linkedin.com/in/emilywang',
     resumeUrl: '/resumes/emily-wang-resume.pdf',
-    message: 'Passionate iOS developer with 3 years of experience. Published 2 apps on the App Store and excited to contribute to Apple\'s ecosystem.',
+    message:
+      "Passionate iOS developer with 3 years of experience. Published 2 apps on the App Store and excited to contribute to Apple's ecosystem.",
     referralEventId: 4,
     notes: '',
     rating: 0,
@@ -141,7 +158,8 @@ const initialMockApplicants = [
     status: 'shortlisted',
     linkedinUrl: 'https://linkedin.com/in/davidkim',
     resumeUrl: '/resumes/david-kim-resume.pdf',
-    message: 'Senior engineer with fintech background looking to transition to big tech. Strong system design skills.',
+    message:
+      'Senior engineer with fintech background looking to transition to big tech. Strong system design skills.',
     referralEventId: 1,
     notes: 'Excellent system design interview. Strong candidate.',
     rating: 5,
@@ -149,9 +167,9 @@ const initialMockApplicants = [
 ];
 
 const referralEvents = [
-  { 
-    id: 1, 
-    title: 'Senior Software Engineer', 
+  {
+    id: 1,
+    title: 'Senior Software Engineer',
     company: 'Google',
     location: 'Mountain View, CA',
     maxApplicants: 20,
@@ -159,11 +177,11 @@ const referralEvents = [
     jobUrl: 'https://careers.google.com/jobs/results/123456789',
     requirements: 'Looking for experienced React/Node.js developers with 5+ years experience',
     tags: ['React', 'Node.js', 'TypeScript'],
-    logo: 'https://logo.clearbit.com/google.com'
+    logo: 'https://logo.clearbit.com/google.com',
   },
-  { 
-    id: 2, 
-    title: 'Product Manager', 
+  {
+    id: 2,
+    title: 'Product Manager',
     company: 'Microsoft',
     location: 'Seattle, WA',
     maxApplicants: 15,
@@ -171,11 +189,11 @@ const referralEvents = [
     jobUrl: 'https://careers.microsoft.com/us/en/job/1234567',
     requirements: 'Seeking PM with B2B SaaS experience and strong analytical skills',
     tags: ['Product Management', 'Analytics', 'B2B'],
-    logo: 'https://logo.clearbit.com/microsoft.com'
+    logo: 'https://logo.clearbit.com/microsoft.com',
   },
-  { 
-    id: 3, 
-    title: 'Data Scientist', 
+  {
+    id: 3,
+    title: 'Data Scientist',
     company: 'Amazon',
     location: 'Seattle, WA',
     maxApplicants: 12,
@@ -183,11 +201,11 @@ const referralEvents = [
     jobUrl: 'https://amazon.jobs/en/jobs/2345678',
     requirements: 'PhD in Statistics or related field with ML experience',
     tags: ['Python', 'Machine Learning', 'Statistics'],
-    logo: 'https://logo.clearbit.com/amazon.com'
+    logo: 'https://logo.clearbit.com/amazon.com',
   },
-  { 
-    id: 4, 
-    title: 'iOS Developer', 
+  {
+    id: 4,
+    title: 'iOS Developer',
     company: 'Apple',
     location: 'Cupertino, CA',
     maxApplicants: 10,
@@ -195,7 +213,7 @@ const referralEvents = [
     jobUrl: 'https://jobs.apple.com/en-us/details/200345678',
     requirements: 'iOS development experience with Swift and SwiftUI',
     tags: ['Swift', 'iOS', 'Mobile Development'],
-    logo: 'https://logo.clearbit.com/apple.com'
+    logo: 'https://logo.clearbit.com/apple.com',
   },
 ];
 
@@ -203,43 +221,46 @@ export default function AnalyticsPage() {
   const { user } = useAuth();
   const [mockApplicants, setMockApplicants] = useState(initialMockApplicants);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedEvent, setSelectedEvent] = useState<typeof referralEvents[0] | null>(null);
-  const [selectedApplicant, setSelectedApplicant] = useState<typeof mockApplicants[0] | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<(typeof referralEvents)[0] | null>(null);
+  const [selectedApplicant, setSelectedApplicant] = useState<(typeof mockApplicants)[0] | null>(
+    null
+  );
   const [applicantNotes, setApplicantNotes] = useState('');
 
   // Update applicant status with visual feedback
-  const updateApplicantStatus = useCallback((applicantId: number, newStatus: string) => {
-    setMockApplicants(prev => 
-      prev.map(applicant => 
-        applicant.id === applicantId 
-          ? { ...applicant, status: newStatus }
-          : applicant
-      )
-    );
-    
-    const applicant = mockApplicants.find(a => a.id === applicantId);
-    const statusText = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
-    
-    toast.success(`${applicant?.name} has been ${statusText.toLowerCase()}`, {
-      description: `Status updated successfully`,
-    });
-  }, [mockApplicants]);
+  const updateApplicantStatus = useCallback(
+    (applicantId: number, newStatus: string) => {
+      setMockApplicants(prev =>
+        prev.map(applicant =>
+          applicant.id === applicantId ? { ...applicant, status: newStatus } : applicant
+        )
+      );
+
+      const applicant = mockApplicants.find(a => a.id === applicantId);
+      const statusText = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+
+      toast.success(`${applicant?.name} has been ${statusText.toLowerCase()}`, {
+        description: `Status updated successfully`,
+      });
+    },
+    [mockApplicants]
+  );
 
   // Save applicant notes with feedback
   const saveApplicantNotes = useCallback(() => {
     if (selectedApplicant) {
-      setMockApplicants(prev => 
-        prev.map(applicant => 
-          applicant.id === selectedApplicant.id 
+      setMockApplicants(prev =>
+        prev.map(applicant =>
+          applicant.id === selectedApplicant.id
             ? { ...applicant, notes: applicantNotes }
             : applicant
         )
       );
-      
+
       toast.success('Notes saved successfully', {
         description: `Notes updated for ${selectedApplicant.name}`,
       });
-      
+
       setSelectedApplicant(null);
       setApplicantNotes('');
     }
@@ -247,10 +268,11 @@ export default function AnalyticsPage() {
 
   // Filter referral events based on search
   const filteredEvents = useMemo(() => {
-    return referralEvents.filter(event => 
-      event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      event.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      event.location.toLowerCase().includes(searchTerm.toLowerCase())
+    return referralEvents.filter(
+      event =>
+        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.location.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [searchTerm]);
 
@@ -263,36 +285,44 @@ export default function AnalyticsPage() {
   // Calculate analytics for selected event
   const eventAnalytics = useMemo(() => {
     if (!selectedEvent) return null;
-    
+
     const applicants = eventApplicants;
     const total = applicants.length;
     const pending = applicants.filter(a => a.status === 'pending').length;
     const shortlisted = applicants.filter(a => a.status === 'shortlisted').length;
     const rejected = applicants.filter(a => a.status === 'rejected').length;
 
-    const skillsCount = applicants.reduce((acc, applicant) => {
-      applicant.skills.forEach(skill => {
-        acc[skill] = (acc[skill] || 0) + 1;
-      });
-      return acc;
-    }, {} as Record<string, number>);
+    const skillsCount = applicants.reduce(
+      (acc, applicant) => {
+        applicant.skills.forEach(skill => {
+          acc[skill] = (acc[skill] || 0) + 1;
+        });
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
-    const experienceDistribution = applicants.reduce((acc, applicant) => {
-      const years = parseInt(applicant.experience);
-      if (years <= 2) acc['0-2 years']++;
-      else if (years <= 5) acc['3-5 years']++;
-      else if (years <= 8) acc['6-8 years']++;
-      else acc['9+ years']++;
-      return acc;
-    }, { '0-2 years': 0, '3-5 years': 0, '6-8 years': 0, '9+ years': 0 });
+    const experienceDistribution = applicants.reduce(
+      (acc, applicant) => {
+        const years = parseInt(applicant.experience);
+        if (years <= 2) acc['0-2 years']++;
+        else if (years <= 5) acc['3-5 years']++;
+        else if (years <= 8) acc['6-8 years']++;
+        else acc['9+ years']++;
+        return acc;
+      },
+      { '0-2 years': 0, '3-5 years': 0, '6-8 years': 0, '9+ years': 0 }
+    );
 
     return {
       total,
       pending,
       shortlisted,
       rejected,
-      topSkills: Object.entries(skillsCount).sort(([,a], [,b]) => b - a).slice(0, 5),
-      experienceDistribution
+      topSkills: Object.entries(skillsCount)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 5),
+      experienceDistribution,
     };
   }, [selectedEvent, eventApplicants]);
 
@@ -336,7 +366,7 @@ export default function AnalyticsPage() {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
-      year: 'numeric'
+      year: 'numeric',
     });
   };
 
@@ -373,8 +403,8 @@ export default function AnalyticsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Back Button */}
           <div className="mb-6">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               onClick={() => setSelectedEvent(null)}
               className="flex items-center text-gray-600 hover:text-black"
             >
@@ -387,11 +417,11 @@ export default function AnalyticsPage() {
           <div className="mb-8">
             <div className="flex items-center space-x-4 mb-4">
               <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-                <img 
-                  src={selectedEvent.logo} 
+                <img
+                  src={selectedEvent.logo}
                   alt={`${selectedEvent.company} logo`}
                   className="w-full h-full object-cover"
-                  onError={(e) => {
+                  onError={e => {
                     const target = e.target as HTMLImageElement;
                     target.style.display = 'none';
                     target.nextElementSibling?.classList.remove('hidden');
@@ -403,7 +433,9 @@ export default function AnalyticsPage() {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-black">{selectedEvent.title}</h1>
-                <p className="text-lg text-gray-600">{selectedEvent.company} • {selectedEvent.location}</p>
+                <p className="text-lg text-gray-600">
+                  {selectedEvent.company} • {selectedEvent.location}
+                </p>
               </div>
             </div>
 
@@ -439,9 +471,7 @@ export default function AnalyticsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{eventAnalytics.total}</div>
-                  <p className="text-xs text-muted-foreground">
-                    For this event
-                  </p>
+                  <p className="text-xs text-muted-foreground">For this event</p>
                 </CardContent>
               </Card>
 
@@ -452,9 +482,7 @@ export default function AnalyticsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{eventAnalytics.pending}</div>
-                  <p className="text-xs text-muted-foreground">
-                    Awaiting review
-                  </p>
+                  <p className="text-xs text-muted-foreground">Awaiting review</p>
                 </CardContent>
               </Card>
 
@@ -465,9 +493,7 @@ export default function AnalyticsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{eventAnalytics.shortlisted}</div>
-                  <p className="text-xs text-muted-foreground">
-                    Ready for next steps
-                  </p>
+                  <p className="text-xs text-muted-foreground">Ready for next steps</p>
                 </CardContent>
               </Card>
 
@@ -478,11 +504,12 @@ export default function AnalyticsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
-                    {eventAnalytics.total > 0 ? Math.round((eventAnalytics.shortlisted / eventAnalytics.total) * 100) : 0}%
+                    {eventAnalytics.total > 0
+                      ? Math.round((eventAnalytics.shortlisted / eventAnalytics.total) * 100)
+                      : 0}
+                    %
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    Shortlist rate
-                  </p>
+                  <p className="text-xs text-muted-foreground">Shortlist rate</p>
                 </CardContent>
               </Card>
             </div>
@@ -501,14 +528,20 @@ export default function AnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {eventApplicants.map((applicant) => (
-                  <Card key={applicant.id} className="hover:shadow-lg transition-shadow duration-200">
+                {eventApplicants.map(applicant => (
+                  <Card
+                    key={applicant.id}
+                    className="hover:shadow-lg transition-shadow duration-200"
+                  >
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <div className="flex items-center space-x-4">
                           <Avatar className="h-12 w-12">
                             <AvatarFallback className="bg-yellow-400 text-black font-semibold">
-                              {applicant.name.split(' ').map(n => n[0]).join('')}
+                              {applicant.name
+                                .split(' ')
+                                .map(n => n[0])
+                                .join('')}
                             </AvatarFallback>
                           </Avatar>
                           <div>
@@ -519,7 +552,9 @@ export default function AnalyticsPage() {
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Badge className={`${getStatusColor(applicant.status)} flex items-center gap-1`}>
+                          <Badge
+                            className={`${getStatusColor(applicant.status)} flex items-center gap-1`}
+                          >
                             {getStatusIcon(applicant.status)}
                             {applicant.status.charAt(0).toUpperCase() + applicant.status.slice(1)}
                           </Badge>
@@ -617,7 +652,7 @@ export default function AnalyticsPage() {
                             <Download className="h-4 w-4 mr-2" />
                             Resume
                           </Button>
-                          
+
                           <Dialog>
                             <DialogTrigger asChild>
                               <Button
@@ -642,7 +677,7 @@ export default function AnalyticsPage() {
                               <div className="space-y-4">
                                 <Textarea
                                   value={applicantNotes}
-                                  onChange={(e) => setApplicantNotes(e.target.value)}
+                                  onChange={e => setApplicantNotes(e.target.value)}
                                   placeholder="Add your notes about this candidate..."
                                   rows={4}
                                 />
@@ -650,8 +685,8 @@ export default function AnalyticsPage() {
                                   <Button onClick={saveApplicantNotes} className="flex-1">
                                     Save Notes
                                   </Button>
-                                  <Button 
-                                    variant="outline" 
+                                  <Button
+                                    variant="outline"
                                     onClick={() => setSelectedApplicant(null)}
                                     className="flex-1"
                                   >
@@ -670,7 +705,7 @@ export default function AnalyticsPage() {
                             <MessageSquare className="h-4 w-4 mr-2" />
                             Email
                           </Button>
-                          
+
                           {applicant.status === 'pending' && (
                             <>
                               <Button
@@ -691,7 +726,7 @@ export default function AnalyticsPage() {
                               </Button>
                             </>
                           )}
-                          
+
                           {applicant.status === 'shortlisted' && (
                             <Button
                               size="sm"
@@ -702,7 +737,7 @@ export default function AnalyticsPage() {
                               Reject
                             </Button>
                           )}
-                          
+
                           {applicant.status === 'rejected' && (
                             <Button
                               size="sm"
@@ -780,7 +815,9 @@ export default function AnalyticsPage() {
                           <div className="w-24 bg-gray-200 rounded-full h-2">
                             <div
                               className="bg-blue-400 h-2 rounded-full"
-                              style={{ width: `${eventAnalytics.total > 0 ? (count / eventAnalytics.total) * 100 : 0}%` }}
+                              style={{
+                                width: `${eventAnalytics.total > 0 ? (count / eventAnalytics.total) * 100 : 0}%`,
+                              }}
                             ></div>
                           </div>
                           <span className="text-sm text-gray-600">{count}</span>
@@ -804,9 +841,7 @@ export default function AnalyticsPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-black mb-2">Analytics & Events</h1>
-          <p className="text-gray-600">
-            Manage your referral events and track overall performance
-          </p>
+          <p className="text-gray-600">Manage your referral events and track overall performance</p>
         </div>
 
         {/* Overall Analytics Cards */}
@@ -818,9 +853,7 @@ export default function AnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{referralEvents.length}</div>
-              <p className="text-xs text-muted-foreground">
-                Active referral events
-              </p>
+              <p className="text-xs text-muted-foreground">Active referral events</p>
             </CardContent>
           </Card>
 
@@ -831,9 +864,7 @@ export default function AnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{overallAnalytics.total}</div>
-              <p className="text-xs text-muted-foreground">
-                Across all events
-              </p>
+              <p className="text-xs text-muted-foreground">Across all events</p>
             </CardContent>
           </Card>
 
@@ -844,9 +875,7 @@ export default function AnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{overallAnalytics.pending}</div>
-              <p className="text-xs text-muted-foreground">
-                Awaiting your review
-              </p>
+              <p className="text-xs text-muted-foreground">Awaiting your review</p>
             </CardContent>
           </Card>
 
@@ -857,9 +886,7 @@ export default function AnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{overallAnalytics.shortlisted}</div>
-              <p className="text-xs text-muted-foreground">
-                Ready for next steps
-              </p>
+              <p className="text-xs text-muted-foreground">Ready for next steps</p>
             </CardContent>
           </Card>
         </div>
@@ -875,7 +902,7 @@ export default function AnalyticsPage() {
               <Input
                 placeholder="Search by job title, company, or location..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -884,7 +911,7 @@ export default function AnalyticsPage() {
 
         {/* Referral Events List */}
         <div className="space-y-6">
-          {filteredEvents.map((event) => {
+          {filteredEvents.map(event => {
             const eventApplicantsCount = mockApplicants.filter(a => a.referralEventId === event.id);
             const pending = eventApplicantsCount.filter(a => a.status === 'pending').length;
             const shortlisted = eventApplicantsCount.filter(a => a.status === 'shortlisted').length;
@@ -894,35 +921,47 @@ export default function AnalyticsPage() {
             const isExpired = daysLeft < 0;
 
             // Calculate top skills for this event
-            const eventSkills = eventApplicantsCount.reduce((acc, applicant) => {
-              applicant.skills.forEach(skill => {
-                acc[skill] = (acc[skill] || 0) + 1;
-              });
-              return acc;
-            }, {} as Record<string, number>);
-            const topSkills = Object.entries(eventSkills).sort(([,a], [,b]) => b - a).slice(0, 3);
+            const eventSkills = eventApplicantsCount.reduce(
+              (acc, applicant) => {
+                applicant.skills.forEach(skill => {
+                  acc[skill] = (acc[skill] || 0) + 1;
+                });
+                return acc;
+              },
+              {} as Record<string, number>
+            );
+            const topSkills = Object.entries(eventSkills)
+              .sort(([, a], [, b]) => b - a)
+              .slice(0, 3);
 
             // Calculate experience distribution
-            const expDistribution = eventApplicantsCount.reduce((acc, applicant) => {
-              const years = parseInt(applicant.experience);
-              if (years <= 2) acc['0-2']++;
-              else if (years <= 5) acc['3-5']++;
-              else if (years <= 8) acc['6-8']++;
-              else acc['9+']++;
-              return acc;
-            }, { '0-2': 0, '3-5': 0, '6-8': 0, '9+': 0 });
+            const expDistribution = eventApplicantsCount.reduce(
+              (acc, applicant) => {
+                const years = parseInt(applicant.experience);
+                if (years <= 2) acc['0-2']++;
+                else if (years <= 5) acc['3-5']++;
+                else if (years <= 8) acc['6-8']++;
+                else acc['9+']++;
+                return acc;
+              },
+              { '0-2': 0, '3-5': 0, '6-8': 0, '9+': 0 }
+            );
 
             return (
-              <Card key={event.id} className="hover:shadow-lg transition-shadow duration-200 cursor-pointer" onClick={() => setSelectedEvent(event)}>
+              <Card
+                key={event.id}
+                className="hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+                onClick={() => setSelectedEvent(event)}
+              >
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-4">
                       <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-                        <img 
-                          src={event.logo} 
+                        <img
+                          src={event.logo}
                           alt={`${event.company} logo`}
                           className="w-full h-full object-cover"
-                          onError={(e) => {
+                          onError={e => {
                             const target = e.target as HTMLImageElement;
                             target.style.display = 'none';
                             target.nextElementSibling?.classList.remove('hidden');
@@ -956,7 +995,9 @@ export default function AnalyticsPage() {
                     {/* Event Stats */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-black">{eventApplicantsCount.length}</div>
+                        <div className="text-2xl font-bold text-black">
+                          {eventApplicantsCount.length}
+                        </div>
                         <div className="text-sm text-gray-600">Total</div>
                       </div>
                       <div className="text-center">
@@ -990,15 +1031,18 @@ export default function AnalyticsPage() {
                     {/* Experience Distribution */}
                     {eventApplicantsCount.length > 0 && (
                       <div>
-                        <h4 className="text-sm font-medium text-gray-700 mb-2">Experience Distribution:</h4>
+                        <h4 className="text-sm font-medium text-gray-700 mb-2">
+                          Experience Distribution:
+                        </h4>
                         <div className="flex space-x-4 text-xs text-gray-600">
-                          {Object.entries(expDistribution).map(([range, count]) => (
-                            count > 0 && (
-                              <span key={range}>
-                                {range}y: {count}
-                              </span>
-                            )
-                          ))}
+                          {Object.entries(expDistribution).map(
+                            ([range, count]) =>
+                              count > 0 && (
+                                <span key={range}>
+                                  {range}y: {count}
+                                </span>
+                              )
+                          )}
                         </div>
                       </div>
                     )}
@@ -1007,12 +1051,16 @@ export default function AnalyticsPage() {
                     <div>
                       <div className="flex justify-between text-sm text-gray-600 mb-1">
                         <span>Applications</span>
-                        <span>{eventApplicantsCount.length}/{event.maxApplicants}</span>
+                        <span>
+                          {eventApplicantsCount.length}/{event.maxApplicants}
+                        </span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
                           className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${(eventApplicantsCount.length / event.maxApplicants) * 100}%` }}
+                          style={{
+                            width: `${(eventApplicantsCount.length / event.maxApplicants) * 100}%`,
+                          }}
                         ></div>
                       </div>
                     </div>
@@ -1038,7 +1086,9 @@ export default function AnalyticsPage() {
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">No events found</h3>
               <p className="text-gray-600">
-                {searchTerm ? 'Try adjusting your search criteria.' : 'Create your first referral event to get started.'}
+                {searchTerm
+                  ? 'Try adjusting your search criteria.'
+                  : 'Create your first referral event to get started.'}
               </p>
             </div>
           )}

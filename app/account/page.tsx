@@ -8,8 +8,24 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Edit, Save, X, Plus, MapPin, Briefcase, GraduationCap, User, ArrowLeft } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Edit,
+  Save,
+  X,
+  Plus,
+  MapPin,
+  Briefcase,
+  GraduationCap,
+  User,
+  ArrowLeft,
+} from 'lucide-react';
 
 export default function AccountPage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -47,7 +63,7 @@ export default function AccountPage() {
     if (newSkill.trim() && !profileData.skills.includes(newSkill.trim())) {
       setProfileData(prev => ({
         ...prev,
-        skills: [...prev.skills, newSkill.trim()]
+        skills: [...prev.skills, newSkill.trim()],
       }));
       setNewSkill('');
     }
@@ -56,7 +72,7 @@ export default function AccountPage() {
   const removeSkill = (skillToRemove: string) => {
     setProfileData(prev => ({
       ...prev,
-      skills: prev.skills.filter(skill => skill !== skillToRemove)
+      skills: prev.skills.filter(skill => skill !== skillToRemove),
     }));
   };
 
@@ -64,13 +80,15 @@ export default function AccountPage() {
     setProfileData(prev => ({ ...prev, [field]: value }));
   };
 
+    console.log("user is ")
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb Navigation */}
         <div className="mb-6">
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="inline-flex items-center text-gray-600 hover:text-black transition-colors"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -138,7 +156,7 @@ export default function AccountPage() {
                     <Input
                       id="firstName"
                       value={profileData.firstName}
-                      onChange={(e) => handleChange('firstName', e.target.value)}
+                      onChange={e => handleChange('firstName', e.target.value)}
                       className="mt-1"
                     />
                   ) : (
@@ -151,7 +169,7 @@ export default function AccountPage() {
                     <Input
                       id="lastName"
                       value={profileData.lastName}
-                      onChange={(e) => handleChange('lastName', e.target.value)}
+                      onChange={e => handleChange('lastName', e.target.value)}
                       className="mt-1"
                     />
                   ) : (
@@ -172,7 +190,7 @@ export default function AccountPage() {
                     <Input
                       id="phone"
                       value={profileData.phone}
-                      onChange={(e) => handleChange('phone', e.target.value)}
+                      onChange={e => handleChange('phone', e.target.value)}
                       className="mt-1"
                     />
                   ) : (
@@ -187,7 +205,7 @@ export default function AccountPage() {
                   <Textarea
                     id="bio"
                     value={profileData.bio}
-                    onChange={(e) => handleChange('bio', e.target.value)}
+                    onChange={e => handleChange('bio', e.target.value)}
                     className="mt-1"
                     rows={3}
                   />
@@ -214,7 +232,7 @@ export default function AccountPage() {
                     <Input
                       id="jobTitle"
                       value={profileData.jobTitle}
-                      onChange={(e) => handleChange('jobTitle', e.target.value)}
+                      onChange={e => handleChange('jobTitle', e.target.value)}
                       className="mt-1"
                     />
                   ) : (
@@ -227,7 +245,7 @@ export default function AccountPage() {
                     <Input
                       id="company"
                       value={profileData.company}
-                      onChange={(e) => handleChange('company', e.target.value)}
+                      onChange={e => handleChange('company', e.target.value)}
                       className="mt-1"
                     />
                   ) : (
@@ -240,7 +258,10 @@ export default function AccountPage() {
                 <div>
                   <Label htmlFor="experience">Years of Experience</Label>
                   {isEditing ? (
-                    <Select value={profileData.experience} onValueChange={(value) => handleChange('experience', value)}>
+                    <Select
+                      value={profileData.experience}
+                      onValueChange={value => handleChange('experience', value)}
+                    >
                       <SelectTrigger className="mt-1">
                         <SelectValue />
                       </SelectTrigger>
@@ -263,7 +284,7 @@ export default function AccountPage() {
                     <Input
                       id="location"
                       value={profileData.location}
-                      onChange={(e) => handleChange('location', e.target.value)}
+                      onChange={e => handleChange('location', e.target.value)}
                       className="mt-1"
                     />
                   ) : (
@@ -297,8 +318,8 @@ export default function AccountPage() {
                     <Input
                       placeholder="Add a skill"
                       value={newSkill}
-                      onChange={(e) => setNewSkill(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && addSkill()}
+                      onChange={e => setNewSkill(e.target.value)}
+                      onKeyPress={e => e.key === 'Enter' && addSkill()}
                     />
                     <Button onClick={addSkill} size="sm">
                       <Plus className="h-4 w-4" />
@@ -325,7 +346,7 @@ export default function AccountPage() {
                     <Input
                       id="education"
                       value={profileData.education}
-                      onChange={(e) => handleChange('education', e.target.value)}
+                      onChange={e => handleChange('education', e.target.value)}
                       className="mt-1"
                     />
                   ) : (
@@ -338,7 +359,7 @@ export default function AccountPage() {
                     <Input
                       id="university"
                       value={profileData.university}
-                      onChange={(e) => handleChange('university', e.target.value)}
+                      onChange={e => handleChange('university', e.target.value)}
                       className="mt-1"
                     />
                   ) : (
@@ -352,7 +373,7 @@ export default function AccountPage() {
                   <Input
                     id="graduationYear"
                     value={profileData.graduationYear}
-                    onChange={(e) => handleChange('graduationYear', e.target.value)}
+                    onChange={e => handleChange('graduationYear', e.target.value)}
                     className="mt-1"
                   />
                 ) : (
@@ -374,7 +395,7 @@ export default function AccountPage() {
                   <Input
                     id="linkedinUrl"
                     value={profileData.linkedinUrl}
-                    onChange={(e) => handleChange('linkedinUrl', e.target.value)}
+                    onChange={e => handleChange('linkedinUrl', e.target.value)}
                     className="mt-1"
                   />
                 ) : (
@@ -387,7 +408,7 @@ export default function AccountPage() {
                   <Input
                     id="githubUrl"
                     value={profileData.githubUrl}
-                    onChange={(e) => handleChange('githubUrl', e.target.value)}
+                    onChange={e => handleChange('githubUrl', e.target.value)}
                     className="mt-1"
                   />
                 ) : (

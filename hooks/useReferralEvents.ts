@@ -9,7 +9,6 @@ interface UseReferralEventsReturn {
 }
 
 export function useReferralEvents(): UseReferralEventsReturn {
-  console.log("referral events called")
   const [referralEvents, setReferralEvents] = useState<ReferralEvent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,12 +17,9 @@ export function useReferralEvents(): UseReferralEventsReturn {
   const fetchReferralEvents = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response: ApiResponse<ReferralEvent[]> = await referralEventsApi.getAll();
-      console.log("referral events")
-      console.log(response)
-      
       if (response.success && response.data && Array.isArray(response.data)) {
         setReferralEvents(response.data);
       } else {

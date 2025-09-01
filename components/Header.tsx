@@ -24,7 +24,10 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+          <Link
+            href="/"
+            className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+          >
             <div className="bg-black text-white p-1 rounded">
               <Check className="h-4 w-4" />
             </div>
@@ -37,8 +40,8 @@ export default function Header() {
           {/* Desktop Navigation */}
           {user && (
             <nav className="hidden md:flex items-center space-x-8">
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className={`flex items-center space-x-1 font-medium transition-colors ${
                   pathname === '/' ? 'text-black' : 'text-gray-700 hover:text-black'
                 }`}
@@ -47,8 +50,8 @@ export default function Header() {
                 <span>Home</span>
               </Link>
               {user.role === 'referrer' && (
-                <Link 
-                  href="/analytics" 
+                <Link
+                  href="/analytics"
                   className={`font-medium transition-colors ${
                     pathname === '/analytics' ? 'text-black' : 'text-gray-700 hover:text-black'
                   }`}
@@ -81,23 +84,16 @@ export default function Header() {
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOut}>
-                    Sign Out
-                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="text-sm text-gray-600">
-                Sign in to access your dashboard
-              </div>
+              <div className="text-sm text-gray-600">Sign in to access your dashboard</div>
             )}
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
+          <button className="md:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
@@ -108,8 +104,8 @@ export default function Header() {
             <nav className="flex flex-col space-y-4">
               {user ? (
                 <>
-                  <Link 
-                    href="/" 
+                  <Link
+                    href="/"
                     className={`flex items-center space-x-2 font-medium transition-colors ${
                       pathname === '/' ? 'text-black' : 'text-gray-700 hover:text-black'
                     }`}
@@ -118,8 +114,8 @@ export default function Header() {
                     <span>Home</span>
                   </Link>
                   {user.role === 'referrer' && (
-                    <Link 
-                      href="/analytics" 
+                    <Link
+                      href="/analytics"
                       className={`font-medium transition-colors ${
                         pathname === '/analytics' ? 'text-black' : 'text-gray-700 hover:text-black'
                       }`}
@@ -131,8 +127,8 @@ export default function Header() {
               ) : null}
               {user ? (
                 <div className="flex flex-col space-y-4 pt-4">
-                  <Link 
-                    href="/account" 
+                  <Link
+                    href="/account"
                     className={`font-medium transition-colors ${
                       pathname === '/account' ? 'text-black' : 'text-gray-700 hover:text-black'
                     }`}
@@ -140,8 +136,8 @@ export default function Header() {
                     My Account
                   </Link>
                   {user.role === 'referrer' && (
-                    <Link 
-                      href="/analytics" 
+                    <Link
+                      href="/analytics"
                       className={`font-medium transition-colors ${
                         pathname === '/analytics' ? 'text-black' : 'text-gray-700 hover:text-black'
                       }`}
@@ -149,15 +145,17 @@ export default function Header() {
                       Analytics
                     </Link>
                   )}
-                  <Button variant="ghost" onClick={signOut} className="justify-start p-0 h-auto font-medium text-gray-700 hover:text-black">
+                  <Button
+                    variant="ghost"
+                    onClick={signOut}
+                    className="justify-start p-0 h-auto font-medium text-gray-700 hover:text-black"
+                  >
                     Sign Out
                   </Button>
                 </div>
               ) : (
                 <div className="pt-4">
-                  <p className="text-sm text-gray-600">
-                    Sign in to access your dashboard
-                  </p>
+                  <p className="text-sm text-gray-600">Sign in to access your dashboard</p>
                 </div>
               )}
             </nav>

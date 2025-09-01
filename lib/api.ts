@@ -34,9 +34,10 @@ export interface AppliedReferral {
   logo: string;
   jobTitle: string;
   location: string;
-  appliedDate: string;
-  status: 'pending' | 'shortlisted' | 'rejected';
-  referrerName: string;
+  created_at: string;
+  expiry_date: string;
+  status: 'pending' | 'resume shortlisted' | 'rejected';
+  posted_by: string;
   notes: string;
 }
 
@@ -61,12 +62,9 @@ export interface ApiResponse<T> {
 }
 
 // Generic API request function
-async function apiRequest<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<ApiResponse<T>> {
+async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
   const url = buildApiUrl(endpoint);
-  
+
   const defaultOptions: RequestInit = {
     headers: {
       'Content-Type': 'application/json',
@@ -98,7 +96,7 @@ async function apiRequest<T>(
     };
   } catch (error) {
     console.error(`API request failed for ${endpoint}:`, error);
-    
+
     // Handle specific error types
     let errorMessage = 'Unknown error occurred';
     if (error instanceof Error) {
@@ -110,7 +108,7 @@ async function apiRequest<T>(
         errorMessage = error.message;
       }
     }
-    
+
     return {
       data: null as T,
       success: false,
@@ -156,9 +154,9 @@ export const referralEventsApi = {
 
   // Create new referral event
   create: async (event: Omit<ReferralEvent, 'id'>): Promise<ApiResponse<ReferralEvent>> => {
-    return apiRequest<ReferralEvent>('/referral-events', { 
-      method: 'POST', 
-      body: JSON.stringify(event) 
+    return apiRequest<ReferralEvent>('/referral-events', {
+      method: 'POST',
+      body: JSON.stringify(event),
     });
   },
 };
@@ -166,8 +164,8 @@ export const referralEventsApi = {
 // Applied Referrals API
 export const appliedReferralsApi = {
   // Get all applied referrals
-  getAll: async (): Promise<ApiResponse<AppliedReferral[]>> => {
-    return apiRequest<AppliedReferral[]>('/applied-referrals');
+  getAll: async (email: string): Promise<ApiResponse<AppliedReferral[]>> => {
+    return apiRequest<AppliedReferral[]>('/applied-referrals?email=' + email);
   },
 
   // Get applied referral by ID
@@ -177,9 +175,9 @@ export const appliedReferralsApi = {
 
   // Create new applied referral
   create: async (referral: Omit<AppliedReferral, 'id'>): Promise<ApiResponse<AppliedReferral>> => {
-    return apiRequest<AppliedReferral>('/applied-referrals', { 
-      method: 'POST', 
-      body: JSON.stringify(referral) 
+    return apiRequest<AppliedReferral>('/applied-referrals', {
+      method: 'POST',
+      body: JSON.stringify(referral),
     });
   },
 };
@@ -204,21 +202,20 @@ export const jobsApi = {
 
 // Generic API functions
 export const api = {
-  get: <T>(endpoint: string): Promise<ApiResponse<T>> => 
-    apiRequest<T>(endpoint, { method: 'GET' }),
-    
-  post: <T>(endpoint: string, data: any): Promise<ApiResponse<T>> => 
-    apiRequest<T>(endpoint, { 
-      method: 'POST', 
-      body: JSON.stringify(data) 
+  get: <T>(endpoint: string): Promise<ApiResponse<T>> => apiRequest<T>(endpoint, { method: 'GET' }),
+
+  post: <T>(endpoint: string, data: any): Promise<ApiResponse<T>> =>
+    apiRequest<T>(endpoint, {
+      method: 'POST',
+      body: JSON.stringify(data),
     }),
-    
-  put: <T>(endpoint: string, data: any): Promise<ApiResponse<T>> => 
-    apiRequest<T>(endpoint, { 
-      method: 'PUT', 
-      body: JSON.stringify(data) 
+
+  put: <T>(endpoint: string, data: any): Promise<ApiResponse<T>> =>
+    apiRequest<T>(endpoint, {
+      method: 'PUT',
+      body: JSON.stringify(data),
     }),
-    
-  delete: <T>(endpoint: string): Promise<ApiResponse<T>> => 
+
+  delete: <T>(endpoint: string): Promise<ApiResponse<T>> =>
     apiRequest<T>(endpoint, { method: 'DELETE' }),
 };

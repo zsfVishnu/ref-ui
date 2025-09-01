@@ -22,6 +22,7 @@ The application is configured to fetch companies data from an external API. You 
 ### Changing API Base URL
 
 #### Option 1: Environment Variable (Recommended)
+
 Create a `.env.local` file in your project root:
 
 ```bash
@@ -30,6 +31,7 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
 ```
 
 #### Option 2: Direct Code Change
+
 Edit `lib/config.ts`:
 
 ```typescript
@@ -74,6 +76,7 @@ interface ApiResponse<T> {
 ## 🏃‍♂️ Getting Started
 
 1. **Install dependencies**:
+
    ```bash
    npm install
    ```
@@ -83,6 +86,7 @@ interface ApiResponse<T> {
    - Update `NEXT_PUBLIC_API_BASE_URL` to point to your API
 
 3. **Start development server**:
+
    ```bash
    npm run dev
    ```
@@ -123,16 +127,19 @@ ref-ui/
 ## 🌐 Environment-Specific Configurations
 
 ### Development
+
 ```bash
 NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
 ```
 
 ### Staging
+
 ```bash
 NEXT_PUBLIC_API_BASE_URL=https://api-staging.yourapp.com
 ```
 
 ### Production
+
 ```bash
 NEXT_PUBLIC_API_BASE_URL=https://api.yourapp.com
 ```

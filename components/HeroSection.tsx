@@ -12,7 +12,7 @@ export default function HeroSection() {
               Get Referral - Your Gateway to Job Referrals
             </h1>
             <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-              Join our referral marketplace to discover job referral opportunities from top 
+              Join our referral marketplace to discover job referral opportunities from top
               companies and improve your chances of getting hired.
             </p>
             <Button className="bg-black hover:bg-gray-800 text-white font-semibold px-8 py-3 text-lg mb-12">
@@ -54,9 +54,9 @@ export default function HeroSection() {
           {/* Right Illustration */}
           <div className="relative">
             <div className="relative w-full h-96 lg:h-[500px]">
-              <img 
-                src="https://images.pexels.com/photos/3183170/pexels-photo-3183170.jpeg?auto=compress&cs=tinysrgb&w=600" 
-                alt="Team collaboration illustration" 
+              <img
+                src="https://images.pexels.com/photos/3183170/pexels-photo-3183170.jpeg?auto=compress&cs=tinysrgb&w=600"
+                alt="Team collaboration illustration"
                 className="w-full h-full object-cover rounded-2xl shadow-lg"
               />
               <div className="absolute inset-0 bg-gradient-to-br from-purple-100/30 via-transparent to-yellow-100/30 rounded-2xl"></div>

@@ -4,8 +4,20 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { MessageSquare, X, Check } from 'lucide-react';
 
 export default function FeedbackWidget() {
@@ -13,7 +25,7 @@ export default function FeedbackWidget() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     type: '',
-    message: ''
+    message: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -74,7 +86,10 @@ export default function FeedbackWidget() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <Label htmlFor="feedbackType">Feedback Type</Label>
-                <Select value={formData.type} onValueChange={(value) => setFormData(prev => ({ ...prev, type: value }))}>
+                <Select
+                  value={formData.type}
+                  onValueChange={value => setFormData(prev => ({ ...prev, type: value }))}
+                >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Select feedback type" />
                   </SelectTrigger>
@@ -92,7 +107,7 @@ export default function FeedbackWidget() {
                 <Textarea
                   id="message"
                   value={formData.message}
-                  onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                  onChange={e => setFormData(prev => ({ ...prev, message: e.target.value }))}
                   placeholder="Tell us what's on your mind..."
                   className="mt-1"
                   rows={4}

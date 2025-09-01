@@ -8,22 +8,19 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Get Referral - Your Gateway to Job Referrals',
-  description: 'Join our referral marketplace to discover job referral opportunities from top companies and improve your chances of getting hired.',
+  description:
+    'Join our referral marketplace to discover job referral opportunities from top companies and improve your chances of getting hired.',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
           {children}
-          <Toaster 
-            position="top-right" 
-            richColors 
+          <Toaster
+            position="top-right"
+            richColors
             closeButton
             toastOptions={{
               style: {

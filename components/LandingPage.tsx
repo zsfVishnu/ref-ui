@@ -6,7 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Eye, EyeOff, Check, Search, Unlock, Users } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
@@ -26,6 +32,9 @@ export default function LandingPage() {
     firstName: '',
     lastName: '',
     email: '',
+    linkedin: '',
+    github: '',
+    company: '',
     password: '',
     confirmPassword: '',
     role: 'candidate' as 'candidate' | 'referrer',
@@ -40,6 +49,8 @@ export default function LandingPage() {
     if (isSignUp) {
       if (!formData.firstName) newErrors.firstName = 'First name is required';
       if (!formData.lastName) newErrors.lastName = 'Last name is required';
+      if (formData.role === 'referrer' && !formData.company)
+        newErrors.company = 'Company name is required';
       if (formData.password !== formData.confirmPassword) {
         newErrors.confirmPassword = 'Passwords do not match';
       }
@@ -67,13 +78,14 @@ export default function LandingPage() {
       try {
         let success = true;
         if (isSignUp) {
-          console.log("formdata " , formData);
           success = await signUp({
             firstName: formData.firstName,
             lastName: formData.lastName,
             email: formData.email,
+            linkedin: formData.linkedin,
             password: formData.password,
             role: formData.role,
+            company: formData.company,
           });
           if (!success) {
             setErrors({ email: 'User already exists with this email' });
@@ -94,9 +106,9 @@ export default function LandingPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({ 
-      ...prev, 
-      [name]: type === 'checkbox' ? checked : value 
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
     }));
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
@@ -115,7 +127,7 @@ export default function LandingPage() {
                 Get Referral - Your Gateway to Job Referrals
               </h1>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                Join our referral marketplace to discover job referral opportunities from top 
+                Join our referral marketplace to discover job referral opportunities from top
                 companies and improve your chances of getting hired.
               </p>
 
@@ -159,10 +171,9 @@ export default function LandingPage() {
                     {isSignUp ? 'Create your account' : 'Welcome back'}
                   </CardTitle>
                   <CardDescription>
-                    {isSignUp 
+                    {isSignUp
                       ? 'Join thousands of professionals finding their dream jobs through referrals'
-                      : 'Sign in to your account to continue your job search journey'
-                    }
+                      : 'Sign in to your account to continue your job search journey'}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -171,9 +182,15 @@ export default function LandingPage() {
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm">
                       <p className="font-medium text-blue-800 mb-2">🎯 Demo Accounts Available</p>
                       <div className="space-y-1 text-blue-700">
-                        <p><strong>Candidate:</strong> candidate@test.com</p>
-                        <p><strong>Referrer:</strong> referrer@test.com</p>
-                        <p><strong>Password:</strong> password123</p>
+                        <p>
+                          <strong>Candidate:</strong> candidate@test.com
+                        </p>
+                        <p>
+                          <strong>Referrer:</strong> referrer@test.com
+                        </p>
+                        <p>
+                          <strong>Password:</strong> password123
+                        </p>
                       </div>
                     </div>
 
@@ -214,7 +231,12 @@ export default function LandingPage() {
 
                         <div>
                           <Label htmlFor="role">I am a</Label>
-                          <Select value={formData.role} onValueChange={(value: 'candidate' | 'referrer') => setFormData(prev => ({ ...prev, role: value }))}>
+                          <Select
+                            value={formData.role}
+                            onValueChange={(value: 'candidate' | 'referrer') =>
+                              setFormData(prev => ({ ...prev, role: value }))
+                            }
+                          >
                             <SelectTrigger className="mt-1">
                               <SelectValue />
                             </SelectTrigger>
@@ -225,6 +247,24 @@ export default function LandingPage() {
                           </Select>
                         </div>
                       </>
+                    )}
+
+                    {formData.role === 'referrer' && (
+                      <div>
+                        <Label htmlFor="company">Company</Label>
+                        <Input
+                          id="company"
+                          name="company"
+                          type="company"
+                          value={formData.company}
+                          onChange={handleChange}
+                          className={`mt-1 ${errors.company ? 'border-red-500' : ''}`}
+                          placeholder="Enter your Company name"
+                        />
+                        {errors.company && (
+                          <p className="mt-1 text-sm text-red-600">{errors.company}</p>
+                        )}
+                      </div>
                     )}
 
                     <div>
@@ -238,10 +278,28 @@ export default function LandingPage() {
                         className={`mt-1 ${errors.email ? 'border-red-500' : ''}`}
                         placeholder="Enter your email"
                       />
-                      {errors.email && (
-                        <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-                      )}
+                      {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
                     </div>
+
+                    {isSignUp && (
+                      <>
+                        <div>
+                          <Label htmlFor="linkedin">LinkedIn</Label>
+                          <Input
+                            id="linkedin"
+                            name="linkedin"
+                            type="linkedin"
+                            value={formData.linkedin}
+                            onChange={handleChange}
+                            className={`mt-1 ${errors.linkedin ? 'border-red-500' : ''}`}
+                            placeholder="Enter your LinkedIn"
+                          />
+                          {errors.linkedin && (
+                            <p className="mt-1 text-sm text-red-600">{errors.linkedin}</p>
+                          )}
+                        </div>
+                      </>
+                    )}
 
                     <div>
                       <Label htmlFor="password">Password</Label>
@@ -253,7 +311,7 @@ export default function LandingPage() {
                           value={formData.password}
                           onChange={handleChange}
                           className={`pr-10 ${errors.password ? 'border-red-500' : ''}`}
-                          placeholder={isSignUp ? "Create a password" : "Enter your password"}
+                          placeholder={isSignUp ? 'Create a password' : 'Enter your password'}
                         />
                         <button
                           type="button"
@@ -308,17 +366,26 @@ export default function LandingPage() {
                             id="agreeToTerms"
                             name="agreeToTerms"
                             checked={formData.agreeToTerms}
-                            onCheckedChange={(checked) => 
-                              setFormData(prev => ({ ...prev, agreeToTerms: checked as boolean }))
+                            onCheckedChange={checked =>
+                              setFormData(prev => ({
+                                ...prev,
+                                agreeToTerms: checked as boolean,
+                              }))
                             }
                           />
                           <Label htmlFor="agreeToTerms" className="text-sm">
                             I agree to the{' '}
-                            <Link href="/terms" className="text-blue-600 hover:text-blue-500 underline">
+                            <Link
+                              href="/terms"
+                              className="text-blue-600 hover:text-blue-500 underline"
+                            >
                               Terms of Service
-                            </Link>
-                            {' '}and{' '}
-                            <Link href="/privacy" className="text-blue-600 hover:text-blue-500 underline">
+                            </Link>{' '}
+                            and{' '}
+                            <Link
+                              href="/privacy"
+                              className="text-blue-600 hover:text-blue-500 underline"
+                            >
                               Privacy Policy
                             </Link>
                           </Label>
@@ -338,7 +405,7 @@ export default function LandingPage() {
                       className="w-full bg-black hover:bg-gray-800 text-white font-semibold py-2"
                       disabled={isLoading}
                     >
-                      {isLoading ? 'Please wait...' : (isSignUp ? 'Create Account' : 'Sign In')}
+                      {isLoading ? 'Please wait...' : isSignUp ? 'Create Account' : 'Sign In'}
                     </Button>
                   </form>
 
@@ -357,6 +424,9 @@ export default function LandingPage() {
                             confirmPassword: '',
                             role: 'candidate',
                             agreeToTerms: false,
+                            linkedin: '',
+                            company: '',
+                            github: '',
                           });
                         }}
                         className="font-medium text-blue-600 hover:text-blue-500"
@@ -366,10 +436,7 @@ export default function LandingPage() {
                     </p>
                   </div>
 
-                  {!isSignUp && (
-                    <div className="mt-4 text-center">
-                    </div>
-                  )}
+                  {!isSignUp && <div className="mt-4 text-center"></div>}
                 </CardContent>
               </Card>
             </div>

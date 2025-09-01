@@ -7,6 +7,8 @@ interface User {
   id: string;
   email: string;
   name: string;
+  linkedin: string;
+  company: string | null | undefined;
   role: 'candidate' | 'referrer';
 }
 
@@ -17,9 +19,11 @@ interface AuthContextType {
   signUp: (userData: {
     firstName: string;
     lastName: string;
+    linkedin: string;
     email: string;
     password: string;
     role: 'candidate' | 'referrer';
+    company: string | null | undefined;
   }) => Promise<boolean>;
   signOut: () => void;
 }
@@ -32,16 +36,20 @@ const DUMMY_USERS = {
     id: 'dummy-candidate-1',
     email: 'candidate@test.com',
     password: 'password123',
+    linkedin: 'dummy-linkedin',
     name: 'John Candidate',
     role: 'candidate' as const,
+    company: null,
   },
   referrer: {
     id: 'dummy-referrer-1',
     email: 'referrer@test.com',
     password: 'password123',
     name: 'Sarah Referrer',
+    company: 'GetReferred.Inc',
+    linkedin: 'dummy-linkedin',
     role: 'referrer' as const,
-  }
+  },
 };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -80,7 +88,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     firstName: string;
     lastName: string;
     email: string;
+    linkedin: string;
     password: string;
+    company: string | null | undefined;
     role: 'candidate' | 'referrer';
   }) => {
     // Check if it's a dummy user email
@@ -92,10 +102,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           email: dummyUser.email,
           name: `${userData.firstName} ${userData.lastName}`,
           role: userData.role,
+          linkedin: userData.linkedin,
+          company: userData.company,
         };
         localStorage.setItem('dummyUser', JSON.stringify(userSession));
         setUser(userSession);
-        toast.success('Welcome! You\'re using the demo account.', {
+        toast.success("Welcome! You're using the demo account.", {
           description: 'This is a test environment with dummy data.',
         });
         return true;
@@ -104,7 +116,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // For non-dummy users, try API
     try {
-      const API_URL = "http://localhost:4000/api/auth";
+      const API_URL = 'http://localhost:4000/api/auth';
       const res = await fetch(`${API_URL}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -113,6 +125,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           password: userData.password,
           name: `${userData.firstName} ${userData.lastName}`,
           role: userData.role,
+          linkedin: userData.linkedin,
+          company: userData.company,
         }),
       });
       if (!res.ok) {
@@ -126,7 +140,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return await signIn(userData.email, userData.password);
     } catch (error) {
       toast.error('API server not available', {
-        description: 'Use demo accounts: candidate@test.com or referrer@test.com (password: password123)',
+        description:
+          'Use demo accounts: candidate@test.com or referrer@test.com (password: password123)',
       });
       return false;
     }
@@ -143,11 +158,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           email: dummyUser.email,
           name: dummyUser.name,
           role: dummyUser.role,
+          linkedin: dummyUser.linkedin,
+          company: dummyUser.company,
         };
         localStorage.setItem('dummyUser', JSON.stringify(userSession));
         setUser(userSession);
         toast.success(`Welcome back, ${dummyUser.name}!`, {
-          description: 'You\'re using the demo account.',
+          description: "You're using the demo account.",
         });
         return true;
       } else {
@@ -160,7 +177,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // For non-dummy users, try API
     try {
-      const API_URL = "http://localhost:4000/api/auth";
+      const API_URL = 'http://localhost:4000/api/auth';
       const res = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -175,11 +192,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       localStorage.setItem('token', data.token);
-      setUser({ id: data.user.id, email: data.user.email, name: data.user.name, role: data.user.role });
+      setUser({
+        id: data.user.id,
+        email: data.user.email,
+        name: data.user.name,
+        role: data.user.role,
+        linkedin: data.user.linkedin,
+        company: user?.company,
+      });
       return true;
     } catch (error) {
       toast.error('API server not available', {
-        description: 'Use demo accounts: candidate@test.com or referrer@test.com (password: password123)',
+        description:
+          'Use demo accounts: candidate@test.com or referrer@test.com (password: password123)',
       });
       return false;
     }

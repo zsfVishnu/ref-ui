@@ -19,10 +19,10 @@ export function useCompanies(): UseCompaniesReturn {
   const fetchCompanies = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response: ApiResponse<Company[]> = await companiesApi.getAll();
-      
+
       if (response.success && response.data && Array.isArray(response.data)) {
         setCompanies(response.data);
       } else {
@@ -40,60 +40,66 @@ export function useCompanies(): UseCompaniesReturn {
   }, []);
 
   // Search companies
-  const searchCompanies = useCallback(async (query: string) => {
-    if (!query.trim()) {
-      await fetchCompanies();
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      const response: ApiResponse<Company[]> = await companiesApi.search(query);
-      
-      if (response.success && response.data && Array.isArray(response.data)) {
-        setCompanies(response.data);
-      } else {
-        setError(response.error || 'Search failed');
-        setCompanies([]);
+  const searchCompanies = useCallback(
+    async (query: string) => {
+      if (!query.trim()) {
+        await fetchCompanies();
+        return;
       }
-    } catch (err) {
-      console.error('Error searching companies:', err);
-      setError('Search failed');
-      setCompanies([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [fetchCompanies]);
+
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response: ApiResponse<Company[]> = await companiesApi.search(query);
+
+        if (response.success && response.data && Array.isArray(response.data)) {
+          setCompanies(response.data);
+        } else {
+          setError(response.error || 'Search failed');
+          setCompanies([]);
+        }
+      } catch (err) {
+        console.error('Error searching companies:', err);
+        setError('Search failed');
+        setCompanies([]);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [fetchCompanies]
+  );
 
   // Filter companies by tag
-  const filterByTag = useCallback(async (tag: string) => {
-    if (!tag || tag === 'All') {
-      await fetchCompanies();
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      const response: ApiResponse<Company[]> = await companiesApi.getByTag(tag);
-      
-      if (response.success && response.data && Array.isArray(response.data)) {
-        setCompanies(response.data);
-      } else {
-        setError(response.error || 'Filter failed');
-        setCompanies([]);
+  const filterByTag = useCallback(
+    async (tag: string) => {
+      if (!tag || tag === 'All') {
+        await fetchCompanies();
+        return;
       }
-    } catch (err) {
-      console.error('Error filtering companies:', err);
-      setError('Filter failed');
-      setCompanies([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [fetchCompanies]);
+
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response: ApiResponse<Company[]> = await companiesApi.getByTag(tag);
+
+        if (response.success && response.data && Array.isArray(response.data)) {
+          setCompanies(response.data);
+        } else {
+          setError(response.error || 'Filter failed');
+          setCompanies([]);
+        }
+      } catch (err) {
+        console.error('Error filtering companies:', err);
+        setError('Filter failed');
+        setCompanies([]);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [fetchCompanies]
+  );
 
   // Initial fetch
   useEffect(() => {
