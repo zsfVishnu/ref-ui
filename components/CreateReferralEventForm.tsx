@@ -5,37 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-
-const companies = [
-  'Google',
-  'Microsoft',
-  'Amazon',
-  'Apple',
-  'Meta',
-  'Netflix',
-  'Tesla',
-  'Uber',
-  'Airbnb',
-  'Spotify',
-  'Adobe',
-  'Salesforce',
-  'Oracle',
-  'IBM',
-  'Intel',
-];
 
 export default function CreateReferralEventForm({ onClose }: { onClose?: () => void }) {
   const { user } = useAuth();
@@ -51,13 +26,14 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
   });
   const [expiryDate, setExpiryDate] = useState<Date>();
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('starting submit');
+    if (submitting) return;
+    setSubmitting(true);
     const newErrors: Record<string, string> = {};
 
-    if (!formData.company) newErrors.company = 'Company is required';
     if (!formData.jobTitle) newErrors.jobTitle = 'Job title is required';
     if (!formData.jobUrl) newErrors.jobUrl = 'Job URL is required';
     if (!formData.location) newErrors.location = 'Location is required';
@@ -66,16 +42,18 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
     if (!expiryDate) newErrors.expiryDate = 'Expiry date is required';
 
     setErrors(newErrors);
+      console.log("step 0")
 
-    if (Object.keys(newErrors).length === 0) {
-      // Prepare the full event data
+    if (Object.keys(newErrors).length === 0 && user?.company && user.email) {
+        console.log("step 1", user)
       const referralEvent = {
-        id: undefined, // Let backend assign
-        company: formData.company,
-        logo: '', // blank
+        id: undefined,
+        company: user?.company,
+        logo: '',
         job_title: formData.jobTitle,
         location: formData.location,
         applicants: 0,
+        referrer: user?.email,
         max_applicants: Number(formData.maxApplicants),
         expiry_date: expiryDate ? expiryDate.toISOString() : '',
         posted_by: user?.id || '',
@@ -83,34 +61,31 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
         job_url: formData.jobUrl,
         tags: formData.tags,
       };
-      await fetch('http://localhost:4000/referral-events', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(referralEvent),
-      })
-        .then(res => {
-          console.log(res);
-          if (!res.ok) throw new Error('Failed to create referral event');
-          return res.json();
-        })
-        .then(data => {
-          console.log('data', data);
-          toast({
-            title: 'Success',
-            description: 'Referral event created successfully!',
-            variant: 'default',
-          });
-          if (onClose) onClose();
-        })
-        .catch(err => {
-          console.error(err);
-          toast({
-            title: 'Error',
-            description: err.message || 'Failed to create referral event.',
-            variant: 'destructive',
-          });
+
+      try {
+        const res = await fetch('http://localhost:4000/referral-events', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(referralEvent),
         });
-      // Reset form or show success message
+        if (!res.ok) throw new Error('Failed to create referral event');
+        if (onClose) onClose();
+        toast({
+          title: 'Success',
+          description: 'Referral event created successfully!',
+          variant: 'default',
+        });
+      } catch (err: any) {
+        toast({
+          title: 'Error',
+          description: err.message || 'Failed to create referral event.',
+          variant: 'destructive',
+        });
+      } finally {
+        setSubmitting(false);
+      }
+    } else {
+      setSubmitting(false);
     }
   };
 
@@ -124,23 +99,6 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="company">Company *</Label>
-          <Select value={formData.company} onValueChange={value => handleChange('company', value)}>
-            <SelectTrigger className={`mt-1 ${errors.company ? 'border-red-500' : ''}`}>
-              <SelectValue placeholder="Select company" />
-            </SelectTrigger>
-            <SelectContent>
-              {companies.map(company => (
-                <SelectItem key={company} value={company}>
-                  {company}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {errors.company && <p className="mt-1 text-sm text-red-600">{errors.company}</p>}
-        </div>
-
         <div>
           <Label htmlFor="jobTitle">Job Title *</Label>
           <Input
@@ -252,8 +210,8 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
         <p className="mt-1 text-sm text-gray-500">Separate multiple tags with commas</p>
       </div>
 
-      <Button type="submit" className="w-full bg-black hover:bg-gray-800 text-white">
-        Create Referral Event
+      <Button type="submit" className="w-full bg-black hover:bg-gray-800 text-white" disabled={submitting}>
+        {submitting ? 'Creating...' : 'Create Referral Event'}
       </Button>
     </form>
   );

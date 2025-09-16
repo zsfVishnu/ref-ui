@@ -17,14 +17,14 @@ export interface ReferralEvent {
   id: number;
   company: string;
   logo: string;
-  jobTitle: string;
+  job_title: string;
   location: string;
   applicants: number;
-  maxApplicants: number;
-  expiryDate: string;
-  postedBy: string;
+  max_applicants: number;
+  expiry_date: string;
+  posted_by: string;
   requirements: string;
-  jobUrl: string;
+  job_url: string;
   tags: string[];
 }
 
@@ -146,6 +146,10 @@ export const referralEventsApi = {
   getAll: async (): Promise<ApiResponse<ReferralEvent[]>> => {
     return apiRequest<ReferralEvent[]>('/referral-events');
   },
+
+    getAllOfMine: async (referrer: string): Promise<ApiResponse<ReferralEvent[]>> => {
+        return apiRequest<ReferralEvent[]>('/referral-events?referrer=' + referrer);
+    },
 
   // Get referral event by ID
   getById: async (id: number): Promise<ApiResponse<ReferralEvent>> => {

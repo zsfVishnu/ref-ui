@@ -49,6 +49,7 @@ export default function DashboardPage() {
   const [selectedCompany, setSelectedCompany] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('companies');
   const [selectedReferralEvent, setSelectedReferralEvent] = useState<any>(null);
+  const [isReferralTabOpen, setIsReferralTabOpen] = useState(false);
 
   // Use the hooks to fetch data from API
   const {
@@ -99,7 +100,6 @@ export default function DashboardPage() {
       : [];
 
   const formatDate = (dateString: string) => {
-    console.log('date', dateString);
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -164,9 +164,11 @@ export default function DashboardPage() {
           <div className="mb-12">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
               <h2 className="text-2xl font-bold text-black mb-4 lg:mb-0">Your Referral Events</h2>
-              <Dialog>
+              <Dialog
+                  open={isReferralTabOpen}
+              >
                 <DialogTrigger asChild>
-                  <Button className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold">
+                  <Button className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold" onClick={() => setIsReferralTabOpen(true)}>
                     <Plus className="h-4 w-4 mr-2" />
                     Create Event
                   </Button>
@@ -178,7 +180,7 @@ export default function DashboardPage() {
                       Post a referral opportunity for candidates to apply to
                     </DialogDescription>
                   </DialogHeader>
-                  <CreateReferralEventForm />
+                  <CreateReferralEventForm onClose={() => setIsReferralTabOpen(false)}/>
                 </DialogContent>
               </Dialog>
             </div>
@@ -239,8 +241,7 @@ export default function DashboardPage() {
               {!referralEventsLoading &&
                 !referralEventsError &&
                 displayReferralEvents.map(event => {
-                  console.log('referral event', event);
-                  const daysLeft = getDaysUntilExpiry(event.expiryDate);
+                  const daysLeft = getDaysUntilExpiry(event.expiry_date);
                   const isExpiringSoon = daysLeft <= 3;
                   const isExpired = daysLeft < 0;
 
@@ -269,7 +270,7 @@ export default function DashboardPage() {
                               </div>
                             </div>
                             <div>
-                              <CardTitle className="text-xl">{event.jobTitle}</CardTitle>
+                              <CardTitle className="text-xl">{event.job_title}</CardTitle>
                               <CardDescription className="text-lg font-medium">
                                 {event.company}
                               </CardDescription>
@@ -282,7 +283,7 @@ export default function DashboardPage() {
                               <Badge variant="destructive">Expires in {daysLeft} days</Badge>
                             ) : (
                               <Badge variant="secondary">
-                                Expires {formatDate(event.expiryDate)}
+                                Expires {formatDate(event.expiry_date)}
                               </Badge>
                             )}
                           </div>
@@ -297,12 +298,20 @@ export default function DashboardPage() {
                             </div>
                             <div className="flex items-center">
                               <Users className="h-4 w-4 mr-1" />
-                              {event.applicants}/{event.maxApplicants} applicants
+                              {event.applicants}/{event.max_applicants} applicants
                             </div>
+                              {user.role == 'candidate' && (
                             <div className="flex items-center">
                               <Calendar className="h-4 w-4 mr-1" />
-                              Posted by {event.postedBy}
+                              Posted by {event.posted_by}
                             </div>
+                              )}
+
+                              <div className="flex items-center">
+                                  <Calendar className="h-4 w-4 mr-1" />
+                                  Role {event.job_title}
+                              </div>
+
                           </div>
 
                           <p className="text-gray-700">{event.requirements}</p>
@@ -319,7 +328,7 @@ export default function DashboardPage() {
                             <Button
                               variant="outline"
                               className="flex-1"
-                              onClick={() => window.open(event.jobUrl, '_blank')}
+                              onClick={() => window.open(event.job_url, '_blank')}
                             >
                               View Job Posting
                             </Button>
@@ -332,12 +341,12 @@ export default function DashboardPage() {
                               <DialogTrigger asChild>
                                 <Button
                                   className="flex-1 bg-black hover:bg-gray-800 text-white"
-                                  disabled={isExpired || event.applicants >= event.maxApplicants}
+                                  disabled={isExpired || event.applicants >= event.max_applicants}
                                   onClick={() => setSelectedReferralEvent(event)}
                                 >
                                   {isExpired
                                     ? 'Expired'
-                                    : event.applicants >= event.maxApplicants
+                                    : event.applicants >= event.max_applicants
                                       ? 'Full'
                                       : 'Apply for Referral'}
                                 </Button>
@@ -349,7 +358,7 @@ export default function DashboardPage() {
                                     logo: event.logo,
                                     id: event.id,
                                     tags: event.tags,
-                                    careersUrl: event.jobUrl,
+                                    careersUrl: event.job_url,
                                   }}
                                   eventId={event.id}
                                   onClose={() => setSelectedReferralEvent(null)}
@@ -363,7 +372,7 @@ export default function DashboardPage() {
                             <div
                               className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
                               style={{
-                                width: `${(event.applicants / event.maxApplicants) * 100}%`,
+                                width: `${(event.applicants / event.max_applicants) * 100}%`,
                               }}
                             ></div>
                           </div>
@@ -497,7 +506,7 @@ export default function DashboardPage() {
                               </div>
                             </div>
                             <div>
-                              <CardTitle className="text-xl">{referral.jobTitle}</CardTitle>
+                              <CardTitle className="text-xl">{referral.job_title}</CardTitle>
                               <CardDescription className="text-lg font-medium">
                                 {referral?.company}
                               </CardDescription>
@@ -714,7 +723,7 @@ export default function DashboardPage() {
                 {!referralEventsLoading &&
                   !referralEventsError &&
                   displayReferralEvents.map(event => {
-                    const daysLeft = getDaysUntilExpiry(event.expiryDate);
+                    const daysLeft = getDaysUntilExpiry(event.expiry_date);
                     const isExpiringSoon = daysLeft <= 3;
                     const isExpired = daysLeft < 0;
 
@@ -756,7 +765,7 @@ export default function DashboardPage() {
                                 <Badge variant="destructive">Expires in {daysLeft} days</Badge>
                               ) : (
                                 <Badge variant="secondary">
-                                  Expires {formatDate(event.expiryDate)}
+                                  Expires {formatDate(event.expiry_date)}
                                 </Badge>
                               )}
                             </div>
@@ -771,11 +780,11 @@ export default function DashboardPage() {
                               </div>
                               <div className="flex items-center">
                                 <Users className="h-4 w-4 mr-1" />
-                                {event.applicants}/{event.maxApplicants} applicants
+                                {event.applicants}/{event.max_applicants} applicants
                               </div>
                               <div className="flex items-center">
                                 <Calendar className="h-4 w-4 mr-1" />
-                                Posted by {event.postedBy}
+                                Posted by {event.posted_by}
                               </div>
                             </div>
 
@@ -793,7 +802,7 @@ export default function DashboardPage() {
                               <Button
                                 variant="outline"
                                 className="flex-1"
-                                onClick={() => window.open(event.jobUrl, '_blank')}
+                                onClick={() => window.open(event.job_url, '_blank')}
                               >
                                 View Job Posting
                               </Button>
@@ -806,12 +815,12 @@ export default function DashboardPage() {
                                 <DialogTrigger asChild>
                                   <Button
                                     className="flex-1 bg-black hover:bg-gray-800 text-white"
-                                    disabled={isExpired || event.applicants >= event.maxApplicants}
+                                    disabled={isExpired || event.applicants >= event.max_applicants}
                                     onClick={() => setSelectedReferralEvent(event)}
                                   >
                                     {isExpired
                                       ? 'Expired'
-                                      : event.applicants >= event.maxApplicants
+                                      : event.applicants >= event.max_applicants
                                         ? 'Full'
                                         : 'Apply for Referral'}
                                   </Button>
@@ -823,7 +832,7 @@ export default function DashboardPage() {
                                       logo: event.logo,
                                       id: event.id,
                                       tags: event.tags,
-                                      careersUrl: event.jobUrl,
+                                      careersUrl: event.job_url,
                                     }}
                                     eventId={event.id}
                                     onClose={() => setSelectedReferralEvent(null)}
@@ -837,7 +846,7 @@ export default function DashboardPage() {
                               <div
                                 className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
                                 style={{
-                                  width: `${(event.applicants / event.maxApplicants) * 100}%`,
+                                  width: `${(event.applicants / event.max_applicants) * 100}%`,
                                 }}
                               ></div>
                             </div>
