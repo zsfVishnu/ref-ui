@@ -88,6 +88,7 @@ export default function LandingPage() {
             company: formData.company,
           });
           if (!success) {
+            console.log("failed with error", success)
             setErrors({ email: 'User already exists with this email' });
           }
         } else {

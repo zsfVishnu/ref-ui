@@ -49,7 +49,7 @@ export default function Header() {
                 <Home className="h-4 w-4" />
                 <span>Home</span>
               </Link>
-              {user.role === 'referrer' && (
+              {/* {user.role === 'referrer' && (
                 <Link
                   href="/analytics"
                   className={`font-medium transition-colors ${
@@ -58,7 +58,7 @@ export default function Header() {
                 >
                   Analytics
                 </Link>
-              )}
+              )} */}
             </nav>
           )}
 
@@ -75,14 +75,14 @@ export default function Header() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem asChild>
+                  {/* <DropdownMenuItem asChild>
                     <Link href="/account">My Account</Link>
-                  </DropdownMenuItem>
-                  {user.role === 'referrer' && (
+                  </DropdownMenuItem> */}
+                  {/* {user.role === 'referrer' && (
                     <DropdownMenuItem asChild>
                       <Link href="/analytics">Analytics</Link>
                     </DropdownMenuItem>
-                  )}
+                  )} */}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={signOut}>Sign Out</DropdownMenuItem>
                 </DropdownMenuContent>
@@ -113,7 +113,7 @@ export default function Header() {
                     <Home className="h-4 w-4" />
                     <span>Home</span>
                   </Link>
-                  {user.role === 'referrer' && (
+                  {/* {user.role === 'referrer' && (
                     <Link
                       href="/analytics"
                       className={`font-medium transition-colors ${
@@ -122,7 +122,7 @@ export default function Header() {
                     >
                       Analytics
                     </Link>
-                  )}
+                  )} */}
                 </>
               ) : null}
               {user ? (
@@ -135,7 +135,7 @@ export default function Header() {
                   >
                     My Account
                   </Link>
-                  {user.role === 'referrer' && (
+                  {/* {user.role === 'referrer' && (
                     <Link
                       href="/analytics"
                       className={`font-medium transition-colors ${
@@ -144,7 +144,7 @@ export default function Header() {
                     >
                       Analytics
                     </Link>
-                  )}
+                  )} */}
                   <Button
                     variant="ghost"
                     onClick={signOut}

@@ -5,7 +5,7 @@ export interface Company {
   id: number;
   name: string;
   logo: string;
-  tags: string[];
+  tags?: string[];
   careersUrl: string;
   description?: string;
   industry?: string;
