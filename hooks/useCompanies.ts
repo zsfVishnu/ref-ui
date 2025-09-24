@@ -82,23 +82,30 @@ export function useCompanies(): UseCompaniesReturn {
 
   // Fetch all companies
   const fetchCompanies = useCallback(async () => {
+    console.log('Fetching companies...');
     setIsLoading(true);
     setError(null);
 
     try {
       const response: ApiResponse<Company[]> = await companiesApi.getAll();
+      console.log('Companies API response:', response);
 
       if (response.success && response.data && Array.isArray(response.data)) {
+        console.log('Setting companies data:', response.data);
         setCompanies(response.data);
       } else {
+        console.warn('Companies API failed or returned invalid data:', response);
         setError(response.error || 'Failed to fetch companies');
-        // Fallback to empty array if API fails
-        setCompanies([]);
+        // Fallback to dummy data if API fails
+        console.log('Using fallback dummy data for companies');
+        setCompanies(dummyData);
       }
     } catch (err) {
       console.error('Error fetching companies:', err);
       setError('An unexpected error occurred');
-      setCompanies([]);
+      // Fallback to dummy data on error
+      console.log('Using fallback dummy data due to error');
+      setCompanies(dummyData);
     } finally {
       setIsLoading(false);
     }

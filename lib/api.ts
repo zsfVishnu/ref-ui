@@ -64,10 +64,13 @@ export interface ApiResponse<T> {
 // Generic API request function
 async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
   const url = buildApiUrl(endpoint);
+  
+  console.log('Making API request to:', url);
 
   const defaultOptions: RequestInit = {
     headers: {
       'Content-Type': 'application/json',
+      'Accept': 'application/json',
       ...options.headers,
     },
   };
@@ -86,16 +89,18 @@ async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promi
     clearTimeout(timeoutId);
 
     if (!response.ok) {
+      console.error(`API Error: ${response.status} ${response.statusText} for ${url}`);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
+    console.log('API Response for', endpoint, ':', data);
     return {
       data,
       success: true,
     };
   } catch (error) {
-    console.error(`API request failed for ${endpoint}:`, error);
+    console.error(`API request failed for ${url}:`, error);
 
     // Handle specific error types
     let errorMessage = 'Unknown error occurred';
@@ -103,7 +108,7 @@ async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promi
       if (error.name === 'AbortError') {
         errorMessage = 'Request timeout';
       } else if (error.message.includes('Failed to fetch')) {
-        errorMessage = 'Unable to connect to server. Please check if the API server is running.';
+        errorMessage = `Unable to connect to server at ${API_CONFIG.BASE_URL}. Please check if the API server is running.`;
       } else {
         errorMessage = error.message;
       }
@@ -121,22 +126,22 @@ async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promi
 export const companiesApi = {
   // Get all companies
   getAll: async (): Promise<ApiResponse<Company[]>> => {
-    return apiRequest<Company[]>('/jobs');
+    return apiRequest<Company[]>('/companies');
   },
 
   // Get company by ID
   getById: async (id: number): Promise<ApiResponse<Company>> => {
-    return apiRequest<Company>(`/jobs/${id}`);
+    return apiRequest<Company>(`/companies/${id}`);
   },
 
   // Search companies
   search: async (query: string): Promise<ApiResponse<Company[]>> => {
-    return apiRequest<Company[]>(`/jobs?search=${encodeURIComponent(query)}`);
+    return apiRequest<Company[]>(`/companies?search=${encodeURIComponent(query)}`);
   },
 
   // Get companies by industry/tag
   getByTag: async (tag: string): Promise<ApiResponse<Company[]>> => {
-    return apiRequest<Company[]>(`/jobs?tag=${encodeURIComponent(tag)}`);
+    return apiRequest<Company[]>(`/companies?tag=${encodeURIComponent(tag)}`);
   },
 };
 

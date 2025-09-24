@@ -78,10 +78,17 @@ export default function DashboardPage() {
     refetch: refetchAppliedReferrals,
   } = useAppliedReferrals();
 
+  // Debug logging
+  useEffect(() => {
+    console.log('Dashboard - Companies:', { companies, companiesLoading, companiesError });
+    console.log('Dashboard - Referral Events:', { referralEvents, referralEventsLoading, referralEventsError });
+    console.log('Dashboard - Applied Referrals:', { appliedReferrals, appliedReferralsLoading, appliedReferralsError });
+  }, [companies, companiesLoading, companiesError, referralEvents, referralEventsLoading, referralEventsError, appliedReferrals, appliedReferralsLoading, appliedReferralsError]);
+
   // Use fallback data when API fails
-  const displayCompanies = !companiesError ? companies : [];
-  const displayReferralEvents = !referralEventsError ? referralEvents : [];
-  const displayAppliedReferrals = !appliedReferralsError ? appliedReferrals : [];
+  const displayCompanies = companies || [];
+  const displayReferralEvents = referralEvents || [];
+  const displayAppliedReferrals = appliedReferrals || [];
 
   // Generate categories dynamically from API data - only when companies data is available
   const categories =
