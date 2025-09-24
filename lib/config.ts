@@ -1,18 +1,19 @@
 // API Configuration
 export const API_CONFIG = {
   // Base URL for the API - can be changed here or through environment variables
-  BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://referral-backend-2.onrender.com',
+  BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000',
 
   // API endpoints
   ENDPOINTS: {
     JOBS: '/jobs',
     COMPANIES: '/companies',
-    REFERRALS: '/referrals',
+    REFERRAL_EVENTS: '/referral-events',
+    APPLIED_REFERRALS: '/applied-referrals',
     USERS: '/users',
   },
 
   // Request timeout in milliseconds
-  TIMEOUT: 10000,
+  TIMEOUT: 15000,
 };
 
 // Helper function to build full API URLs
