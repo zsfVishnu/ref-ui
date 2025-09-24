@@ -14,7 +14,7 @@ export function useReferralEvents(): UseReferralEventsReturn {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const {user} = useAuth()
+  const {user} = useAuth();
 
   // Fetch all referral events
   const fetchReferralEvents = useCallback(async () => {
@@ -62,21 +62,6 @@ export function useReferralEvents(): UseReferralEventsReturn {
       setReferralEvents([]);
     }
   }, [user, fetchReferralEvents]);
-
-        }
-    } catch (err) {
-      console.error('Error fetching referral events:', err);
-      setError('An unexpected error occurred');
-      setReferralEvents([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  // Initial fetch
-  useEffect(() => {
-    fetchReferralEvents();
-  }, [fetchReferralEvents]);
 
   return {
     referralEvents,
