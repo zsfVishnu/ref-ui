@@ -201,7 +201,7 @@ export default function Footer() {
         {/* Social Media Links */}
         <div className="border-t border-black/20 pt-8">
           <div className="flex justify-between items-center">
-            <div className="text-black text-sm">© 2024 Get Referral. All rights reserved.</div>
+            <div></div>
             <div className="flex space-x-6">
               <div>
                 <h4 className="font-semibold text-black mb-2">Twitter</h4>
