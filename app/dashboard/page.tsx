@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -25,6 +26,7 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
+  FileText,
 } from 'lucide-react';
 import {
   Dialog,
@@ -40,6 +42,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCompanies } from '@/hooks/useCompanies';
 import { useReferralEvents } from '@/hooks/useReferralEvents';
 import { useAppliedReferrals } from '@/hooks/useAppliedReferrals';
+import { toast } from 'sonner';
 import Image from 'next/image';
 
 export default function DashboardPage() {
@@ -50,6 +53,10 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState('companies');
   const [selectedReferralEvent, setSelectedReferralEvent] = useState<any>(null);
   const [isReferralTabOpen, setIsReferralTabOpen] = useState(false);
+
+  // Waitlist form state
+  const [waitlistEmail, setWaitlistEmail] = useState('');
+  const [isSubmittingWaitlist, setIsSubmittingWaitlist] = useState(false);
 
   // Use the hooks to fetch data from API
   const {
@@ -115,6 +122,22 @@ export default function DashboardPage() {
     const diffTime = expiry.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
+  };
+
+  const handleWaitlistSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!waitlistEmail.trim()) return;
+
+    setIsSubmittingWaitlist(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      toast.success('Successfully joined the waitlist!', {
+        description: 'We\'ll notify you when Resume Review is available.',
+      });
+      setWaitlistEmail('');
+      setIsSubmittingWaitlist(false);
+    }, 1000);
   };
 
   const getStatusColor = (status: string) => {
@@ -405,7 +428,7 @@ export default function DashboardPage() {
         {/* Job Seeker Tabbed Dashboard */}
         {user?.role === 'candidate' && (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full smooth-tabs">
-            <TabsList className="grid w-full grid-cols-3 mb-8 rounded-full p-1 bg-gray-100">
+            <TabsList className="grid w-full grid-cols-5 mb-8 rounded-full p-1 bg-gray-100">
               <TabsTrigger value="applied" className="text-sm font-medium">
                 Applied Referrals
               </TabsTrigger>
@@ -414,6 +437,12 @@ export default function DashboardPage() {
               </TabsTrigger>
               <TabsTrigger value="events" className="text-sm font-medium">
                 Active Events
+              </TabsTrigger>
+              <TabsTrigger value="job-postings" className="text-sm font-medium">
+                Job Postings
+              </TabsTrigger>
+              <TabsTrigger value="resume-review" className="text-sm font-medium">
+                Resume Review
               </TabsTrigger>
             </TabsList>
 
@@ -870,6 +899,74 @@ export default function DashboardPage() {
                       </p>
                     </div>
                   )}
+              </div>
+            </TabsContent>
+
+            {/* Active Job Postings Tab */}
+            <TabsContent value="job-postings" className="space-y-6">
+              <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-center">
+                  <div className="mb-6">
+                    <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
+                      <Search className="h-10 w-10 text-white" />
+                    </div>
+                  </div>
+                  <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 bg-clip-text text-transparent mb-4">
+                    Coming Soon
+                  </h2>
+                  <p className="text-lg text-gray-600 max-w-md mx-auto">
+                    We're working on bringing you the latest job postings from top companies. Stay tuned!
+                  </p>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Resume Review Tab */}
+            <TabsContent value="resume-review" className="space-y-6">
+              <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-center max-w-md mx-auto">
+                  <div className="mb-6">
+                    <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center">
+                      <FileText className="h-10 w-10 text-white" />
+                    </div>
+                  </div>
+                  <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+                    Coming Soon
+                  </h2>
+                  <p className="text-lg text-gray-600 mb-8">
+                    Get your resume reviewed by industry experts and boost your chances of landing your dream job.
+                  </p>
+                  
+                  {/* Waitlist Form */}
+                  <Card className="p-6 bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200">
+                    <form onSubmit={handleWaitlistSubmit} className="space-y-4">
+                      <div>
+                        <Label htmlFor="waitlist-email" className="text-left block mb-2 font-medium text-gray-700">
+                          Join the waitlist
+                        </Label>
+                        <Input
+                          id="waitlist-email"
+                          type="email"
+                          placeholder="Enter your email address"
+                          value={waitlistEmail}
+                          onChange={(e) => setWaitlistEmail(e.target.value)}
+                          className="bg-white border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+                          required
+                        />
+                      </div>
+                      <Button
+                        type="submit"
+                        disabled={isSubmittingWaitlist || !waitlistEmail.trim()}
+                        className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold"
+                      >
+                        {isSubmittingWaitlist ? 'Joining...' : 'Join Waitlist'}
+                      </Button>
+                    </form>
+                    <p className="text-sm text-gray-600 mt-3">
+                      Be the first to know when Resume Review launches!
+                    </p>
+                  </Card>
+                </div>
               </div>
             </TabsContent>
           </Tabs>
