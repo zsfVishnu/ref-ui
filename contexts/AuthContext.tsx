@@ -116,8 +116,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // For non-dummy users, try API
     try {
-      const API_URL = 'http://localhost:4000/api/auth';
-      const res = await fetch(`${API_URL}/register`, {
+      const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
+      const res = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -177,8 +177,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // For non-dummy users, try API
     try {
-      const API_URL = 'http://localhost:4000/api/auth';
-      const res = await fetch(`${API_URL}/login`, {
+      const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),

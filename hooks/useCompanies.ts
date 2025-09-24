@@ -13,61 +13,61 @@ interface UseCompaniesReturn {
 const dummyData: Company[] = 
 [
   {
-    id: 4,
+    id: 1,
     name: "apple",
     careersUrl: "https://www.apple.com/careers/us/",
     logo: "https://rcwbvvurvrnrzdwmsquz.supabase.co/storage/v1/object/public/logos/apple.jpeg"
   },
   {
-    id: 3,
+    id: 2,
     name: "amazon",
     careersUrl: "https://www.amazon.jobs/en/",
     logo: "https://rcwbvvurvrnrzdwmsquz.supabase.co/storage/v1/object/public/logos/amazon.jpeg"
   },
   {
-    id: 1,
+    id: 3,
     name: "microsoft",
     careersUrl: "https://careers.microsoft.com/us/en/",
     logo: "https://rcwbvvurvrnrzdwmsquz.supabase.co/storage/v1/object/public/logos/microsoft.png"
   },
   {
-    id: 6,
+    id: 4,
     name: "tiktok",
     careersUrl: "https://careers.tiktok.com/",
     logo: "https://rcwbvvurvrnrzdwmsquz.supabase.co/storage/v1/object/public/logos/tiktok.jpg"
   },
   {
-    id: 21,
+    id: 5,
     name: "meta",
     careersUrl: "https://www.metacareers.com/",
     logo: "https://rcwbvvurvrnrzdwmsquz.supabase.co/storage/v1/object/public/logos/meta.jpeg"
   },
   {
-    id: 2,
+    id: 6,
     name: "google",
     careersUrl: "https://careers.google.com/",
     logo: "https://rcwbvvurvrnrzdwmsquz.supabase.co/storage/v1/object/public/logos/google.jpeg"
   },
   {
-    id: 315,
+    id: 7,
     name: "oracle",
     careersUrl: "https://www.oracle.com/careers/",
     logo: "https://rcwbvvurvrnrzdwmsquz.supabase.co/storage/v1/object/public/logos/oracle.png"
   },
   {
-    id: 429,
+    id: 8,
     name: "jpmorgan",
     careersUrl: "https://careers.jpmorgan.com/us/en/home",
     logo: "https://rcwbvvurvrnrzdwmsquz.supabase.co/storage/v1/object/public/logos/jpmorgan.png"
   },
   {
-    id: 146,
+    id: 9,
     name: "leidos",
     careersUrl: "https://careers.leidos.com/search/jobs/in/wa-washington",
     logo: "https://rcwbvvurvrnrzdwmsquz.supabase.co/storage/v1/object/public/logos/leidos.jpeg"
   },
   {
-    id: 230,
+    id: 10,
     name: "tesla",
     careersUrl: "https://www.tesla.com/careers/search",
     logo: "https://rcwbvvurvrnrzdwmsquz.supabase.co/storage/v1/object/public/logos/tesla.png"
@@ -95,7 +95,6 @@ export function useCompanies(): UseCompaniesReturn {
         // Fallback to empty array if API fails
         setCompanies([]);
       }
-      setCompanies(dummyData)
     } catch (err) {
       console.error('Error fetching companies:', err);
       setError('An unexpected error occurred');

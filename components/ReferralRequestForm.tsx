@@ -93,7 +93,8 @@ export default function ReferralRequestForm({
         additional_message: formData.message,
       };
 
-      await fetch(`http://localhost:4000/referral-events/${eventId}/apply`, {
+      const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
+      await fetch(`${API_URL}/referral-events/${eventId}/apply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(refObject),

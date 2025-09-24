@@ -63,7 +63,8 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
       };
 
       try {
-        const res = await fetch('http://localhost:4000/referral-events', {
+        const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
+        const res = await fetch(`${API_URL}/referral-events`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(referralEvent),
