@@ -1,7 +1,7 @@
 // API Configuration
 export const API_CONFIG = {
   // Base URL for the API - can be changed here or through environment variables
-  BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000',
+  BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://referral-backend-2.onrender.com',
 
   // API endpoints
   ENDPOINTS: {
