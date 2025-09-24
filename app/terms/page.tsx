@@ -254,21 +254,9 @@ export default function TermsPage() {
           <section className="mb-12">
             <h2 className="text-3xl font-bold text-white mb-6">Contact Us</h2>
             <p className="text-gray-300 mb-4">
-              If you have any questions about these terms and conditions, please contact us:
+              If you have any questions about these terms and conditions, please use our feedback
+              form on the main page or reach out through our social media channels.
             </p>
-            <div className="bg-gray-800 rounded-lg p-6">
-              <div className="space-y-2 text-gray-300">
-                <p>
-                  <strong>Email:</strong> legal@getreferral.com
-                </p>
-                <p>
-                  <strong>Address:</strong> 123 Job Seeker Street, City, State, 12345
-                </p>
-                <p>
-                  <strong>Phone:</strong> +1 (555) 123-4567
-                </p>
-              </div>
-            </div>
           </section>
         </div>
       </div>
