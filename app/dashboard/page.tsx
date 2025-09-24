@@ -485,6 +485,7 @@ export default function DashboardPage() {
                       </div>
                     </div>
                   </Card>
+                </div>
               </div>
             </TabsContent>
 
@@ -614,6 +615,7 @@ export default function DashboardPage() {
                       </div>
                     </div>
                   </Card>
+                </div>
               </div>
             </TabsContent>
 
