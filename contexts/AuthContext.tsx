@@ -116,7 +116,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // For non-dummy users, try API
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://referral-backend-2.onrender.com';
+      const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
       const res = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -177,7 +177,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // For non-dummy users, try API
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://referral-backend-2.onrender.com';
+      const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
       const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

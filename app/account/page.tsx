@@ -8,12 +8,15 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import {useAuth} from "@/contexts/AuthContext";
+import ProtectedRoute from '@/components/ProtectedRoute';
+import LandingPage from '@/components/LandingPage';
 
 export default function AccountPage() {
 
     const { user } = useAuth();
 
   return (
+    <ProtectedRoute fallback={<LandingPage />}>
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb Navigation */}
@@ -325,5 +328,6 @@ export default function AccountPage() {
         </div>
       </div>
     </div>
+    </ProtectedRoute>
   );
 }

@@ -86,7 +86,7 @@ export default function ReferralRequestForm({
         additional_message: formData.message,
       };
 
-      const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://referral-backend-2.onrender.com';
+      const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
       await fetch(`${API_URL}/referral-events/${eventId}/apply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

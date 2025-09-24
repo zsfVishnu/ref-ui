@@ -27,7 +27,7 @@ Create a `.env.local` file in your project root:
 
 ```bash
 # .env.local
-NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
+NEXT_PUBLIC_API_BASE_URL=YOUR_API_BASE_URL
 ```
 
 #### Option 2: Direct Code Change
@@ -36,7 +36,7 @@ Edit `lib/config.ts`:
 
 ```typescript
 export const API_CONFIG = {
-  BASE_URL: 'http://your-api-server.com', // Change this line
+  BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
   // ... rest of config
 };
 ```
@@ -129,7 +129,7 @@ ref-ui/
 ### Development
 
 ```bash
-NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
+NEXT_PUBLIC_API_BASE_URL=YOUR_API_BASE_URL
 ```
 
 ### Staging

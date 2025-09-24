@@ -63,7 +63,7 @@ export default function CreateReferralEventForm({ onClose }: { onClose?: () => v
       };
 
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://referral-backend-2.onrender.com';
+        const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
         const res = await fetch(`${API_URL}/referral-events`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

@@ -44,6 +44,8 @@ import { useReferralEvents } from '@/hooks/useReferralEvents';
 import { useAppliedReferrals } from '@/hooks/useAppliedReferrals';
 import { toast } from 'sonner';
 import Image from 'next/image';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import LandingPage from '@/components/LandingPage';
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -136,15 +138,14 @@ export default function DashboardPage() {
     if (!waitlistEmail.trim()) return;
 
     setIsSubmittingWaitlist(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      toast.success('Successfully joined the waitlist!', {
-        description: 'We\'ll notify you when Resume Review is available.',
+    try {
+      // No backend yet; avoid simulating success
+      toast.info('Resume Review waitlist is not available yet.', {
+        description: 'Please check back soon.',
       });
-      setWaitlistEmail('');
+    } finally {
       setIsSubmittingWaitlist(false);
-    }, 1000);
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -174,6 +175,7 @@ export default function DashboardPage() {
   };
 
   return (
+    <ProtectedRoute fallback={<LandingPage />}>
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Welcome Header */}
@@ -256,8 +258,7 @@ export default function DashboardPage() {
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 text-sm text-blue-800">
                     <p className="font-medium mb-2">💡 API Server Not Available</p>
                     <p>
-                      Showing fallback data. To see real-time data, start your API server at{' '}
-                      <code className="bg-blue-100 px-2 py-1 rounded">localhost:4000</code>
+                      Showing fallback data. To see real-time data, configure NEXT_PUBLIC_API_BASE_URL and start your API server.
                     </p>
                   </div>
                   <Button onClick={refetchReferralEvents} variant="outline">
@@ -690,5 +691,6 @@ export default function DashboardPage() {
         )}
       </div>
     </div>
+    </ProtectedRoute>
   );
 }
