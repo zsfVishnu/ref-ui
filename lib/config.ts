@@ -6,7 +6,7 @@ export const API_CONFIG = {
   // API endpoints
   ENDPOINTS: {
     JOBS: '/jobs',
-    COMPANIES: '/companies',
+    COMPANIES: '/jobs',
     REFERRAL_EVENTS: '/referral-events',
     APPLIED_REFERRALS: '/applied-referrals',
     USERS: '/users',

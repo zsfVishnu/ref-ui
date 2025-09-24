@@ -126,22 +126,22 @@ async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promi
 export const companiesApi = {
   // Get all companies
   getAll: async (): Promise<ApiResponse<Company[]>> => {
-    return apiRequest<Company[]>('/companies');
+    return apiRequest<Company[]>('/jobs');
   },
 
   // Get company by ID
   getById: async (id: number): Promise<ApiResponse<Company>> => {
-    return apiRequest<Company>(`/companies/${id}`);
+    return apiRequest<Company>(`/jobs/${id}`);
   },
 
   // Search companies
   search: async (query: string): Promise<ApiResponse<Company[]>> => {
-    return apiRequest<Company[]>(`/companies?search=${encodeURIComponent(query)}`);
+    return apiRequest<Company[]>(`/jobs?search=${encodeURIComponent(query)}`);
   },
 
   // Get companies by industry/tag
   getByTag: async (tag: string): Promise<ApiResponse<Company[]>> => {
-    return apiRequest<Company[]>(`/companies?tag=${encodeURIComponent(tag)}`);
+    return apiRequest<Company[]>(`/jobs?tag=${encodeURIComponent(tag)}`);
   },
 };
 

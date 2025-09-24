@@ -15,14 +15,7 @@ import {
 } from '@/components/ui/select';
 import { Upload, X, Plus } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-
-interface Company {
-  id: number;
-  name: string;
-  logo: string;
-  tags: string[];
-  careersUrl: string;
-}
+import type { Company } from '@/lib/api';
 
 interface ReferralRequestFormProps {
   company: Company;
